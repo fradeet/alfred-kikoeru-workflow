@@ -4,6 +4,7 @@
   "type": "project",
   "require": {
     "php": ">=8.3",
+    "saloonphp/pagination-plugin": "^2.3",
     "saloonphp/saloon": "^4.0"
   },
   "require-dev": {

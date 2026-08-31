@@ -7,8 +7,14 @@ namespace Workflow\KikoeruSdk\Connectors;
 use Saloon\Contracts\Authenticator;
 use Saloon\Http\Auth\TokenAuthenticator;
 use Saloon\Http\Connector;
+use Saloon\Http\Request;
+use Saloon\Http\Response;
+use Saloon\PaginationPlugin\Contracts\HasPagination;
+use Saloon\PaginationPlugin\PagedPaginator;
+use Workflow\KikoeruSdk\Dto\ListReviewsResponse;
+use Workflow\KikoeruSdk\Dto\ReviewWork;
 
-final class KikoeruConnector extends Connector
+final class KikoeruConnector extends Connector implements HasPagination
 {
     private readonly string $apiBaseUrl;
 
@@ -36,6 +42,47 @@ final class KikoeruConnector extends Connector
     public function resolveBaseUrl(): string
     {
         return $this->apiBaseUrl;
+    }
+
+    public function paginate(Request $request): PagedPaginator
+    {
+        return new class(connector: $this, request: $request) extends PagedPaginator {
+            protected function isLastPage(Response $response): bool
+            {
+                $page = $this->page($response);
+
+                return [] === $page->works
+                    || $page->pagination->currentPage * $page->pagination->pageSize >= $page->pagination->totalCount;
+            }
+
+            /** @return list<ReviewWork> */
+            protected function getPageItems(Response $response, Request $request): array
+            {
+                return $this->page($response)->works;
+            }
+
+            protected function getTotalPages(Response $response): int
+            {
+                $pagination = $this->page($response)->pagination;
+
+                if (0 === $pagination->pageSize) {
+                    return 1;
+                }
+
+                return max(1, (int) ceil($pagination->totalCount / $pagination->pageSize));
+            }
+
+            private function page(Response $response): ListReviewsResponse
+            {
+                $data = $response->json();
+
+                if (array_is_list($data)) {
+                    throw new \UnexpectedValueException('The Kikoeru review-list response must be an object.');
+                }
+
+                return ListReviewsResponse::fromArray($data);
+            }
+        };
     }
 
     /** @return array<string, string> */

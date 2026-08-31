@@ -7,11 +7,12 @@ namespace Workflow\KikoeruSdk\Requests;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
+use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Workflow\KikoeruSdk\Dto\ListReviewsResponse;
 use Workflow\KikoeruSdk\Enums\ReviewProgress;
 use Workflow\KikoeruSdk\Enums\SortDirection;
 
-final class ListReviewsRequest extends Request
+final class ListReviewsRequest extends Request implements Paginatable
 {
     protected Method $method = Method::GET;
 
