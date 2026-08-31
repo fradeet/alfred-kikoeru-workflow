@@ -3,7 +3,8 @@
   "description": "For create Alfred workflow easily",
   "type": "project",
   "require": {
-    "php": ">=8.3"
+    "php": ">=8.3",
+    "saloonphp/saloon": "^4.0"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.95",
@@ -17,7 +18,6 @@
     }
   ],
   "config": {
-    "optimize-autoloader": true,
     "sort-packages": true
   },
   "autoload-dev": {
