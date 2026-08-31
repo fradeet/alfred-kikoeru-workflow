@@ -1,0 +1,6 @@
+workflow/vendor/
+workflow/.sync.ffs_db
+workflow/.php-cs-fixer.cache
+workflow/prefs.plist
+.DS_Store
+/*.alfredworkflow
