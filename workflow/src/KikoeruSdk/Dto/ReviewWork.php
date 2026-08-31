@@ -10,35 +10,33 @@ final class ReviewWork
 {
     /**
      * @param array<mixed>       $circle
-     * @param array<mixed>       $rateCountDetail
+     * @param array<mixed>       $rate_count_detail
      * @param null|array<mixed>  $rank
-     * @param list<array<mixed>> $voiceActors
+     * @param list<array<mixed>> $vas
      * @param list<array<mixed>> $tags
-     * @param array<mixed>       $additionalProperties
      */
     public function __construct(
         public readonly int $id,
         public readonly string $title,
-        public readonly int $circleId,
-        public readonly string $circleName,
+        public readonly int $circle_id,
+        public readonly string $name,
         public readonly array $circle,
         public readonly bool $nsfw,
         public readonly ?string $release,
-        public readonly ?int $downloadCount,
+        public readonly ?int $dl_count,
         public readonly ?int $price,
-        public readonly ?int $reviewCount,
-        public readonly ?int $rateCount,
-        public readonly float|int|null $rateAverage,
-        public readonly array $rateCountDetail,
+        public readonly ?int $review_count,
+        public readonly ?int $rate_count,
+        public readonly float|int|null $rate_average_2dp,
+        public readonly array $rate_count_detail,
         public readonly ?array $rank,
-        public readonly array $voiceActors,
+        public readonly array $vas,
         public readonly array $tags,
         public readonly ?int $userRating,
-        public readonly ?string $reviewText,
+        public readonly ?string $review_text,
         public readonly ?ReviewProgress $progress,
-        public readonly ?string $updatedAt,
-        public readonly string $userName,
-        public readonly array $additionalProperties,
+        public readonly ?string $updated_at,
+        public readonly string $user_name,
     ) {}
 
     /** @param array<mixed> $data */
@@ -46,30 +44,30 @@ final class ReviewWork
     {
         $id = self::requiredInt($data, 'id');
         $title = self::requiredString($data, 'title');
-        $circleId = self::requiredInt($data, 'circle_id');
-        $circleName = self::requiredString($data, 'name');
+        $circle_id = self::requiredInt($data, 'circle_id');
+        $name = self::requiredString($data, 'name');
         $circle = self::requiredObject($data, 'circle');
         $nsfw = $data['nsfw'] ?? null;
         $release = self::nullableString($data, 'release');
-        $downloadCount = self::nullableInt($data, 'dl_count');
+        $dl_count = self::nullableInt($data, 'dl_count');
         $price = self::nullableInt($data, 'price');
-        $reviewCount = self::nullableInt($data, 'review_count');
-        $rateCount = self::nullableInt($data, 'rate_count');
-        $rateAverage = $data['rate_average_2dp'] ?? null;
-        $rateCountDetail = self::requiredArray($data, 'rate_count_detail');
+        $review_count = self::nullableInt($data, 'review_count');
+        $rate_count = self::nullableInt($data, 'rate_count');
+        $rate_average_2dp = $data['rate_average_2dp'] ?? null;
+        $rate_count_detail = self::requiredArray($data, 'rate_count_detail');
         $rank = self::nullableArray($data, 'rank');
-        $voiceActors = self::requiredListOfObjects($data, 'vas');
+        $vas = self::requiredListOfObjects($data, 'vas');
         $tags = self::requiredListOfObjects($data, 'tags');
         $userRating = self::nullableInt($data, 'userRating');
-        $reviewText = self::nullableString($data, 'review_text');
-        $updatedAt = self::nullableString($data, 'updated_at');
-        $userName = self::requiredString($data, 'user_name');
+        $review_text = self::nullableString($data, 'review_text');
+        $updated_at = self::nullableString($data, 'updated_at');
+        $user_name = self::requiredString($data, 'user_name');
 
         if (!is_bool($nsfw)) {
             throw self::invalidField('nsfw', 'a boolean');
         }
 
-        if (null !== $rateAverage && !is_int($rateAverage) && !is_float($rateAverage)) {
+        if (null !== $rate_average_2dp && !is_int($rate_average_2dp) && !is_float($rate_average_2dp)) {
             throw self::invalidField('rate_average_2dp', 'a number or null');
         }
 
@@ -84,35 +82,28 @@ final class ReviewWork
             }
         }
 
-        $knownFields = [
-            'id', 'title', 'circle_id', 'name', 'circle', 'nsfw', 'release', 'dl_count',
-            'price', 'review_count', 'rate_count', 'rate_average_2dp', 'rate_count_detail',
-            'rank', 'vas', 'tags', 'userRating', 'review_text', 'progress', 'updated_at', 'user_name',
-        ];
-
         return new self(
             $id,
             $title,
-            $circleId,
-            $circleName,
+            $circle_id,
+            $name,
             $circle,
             $nsfw,
             $release,
-            $downloadCount,
+            $dl_count,
             $price,
-            $reviewCount,
-            $rateCount,
-            $rateAverage,
-            $rateCountDetail,
+            $review_count,
+            $rate_count,
+            $rate_average_2dp,
+            $rate_count_detail,
             $rank,
-            $voiceActors,
+            $vas,
             $tags,
             $userRating,
-            $reviewText,
+            $review_text,
             $progress,
-            $updatedAt,
-            $userName,
-            array_diff_key($data, array_flip($knownFields)),
+            $updated_at,
+            $user_name,
         );
     }
 
