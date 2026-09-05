@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Workflow\KikoeruSdk\Requests;
 
+use Saloon\CachePlugin\Contracts\Cacheable;
+use Saloon\CachePlugin\Contracts\Driver;
+use Saloon\CachePlugin\Traits\HasCaching;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
@@ -12,11 +15,14 @@ use Workflow\KikoeruSdk\Dto\ListReviewsResponse;
 use Workflow\KikoeruSdk\Enums\ReviewProgress;
 use Workflow\KikoeruSdk\Enums\SortDirection;
 
-final class ListReviewsRequest extends Request implements Paginatable
+final class ListReviewsRequest extends Request implements Cacheable, Paginatable
 {
+    use HasCaching;
+
     protected Method $method = Method::GET;
 
     public function __construct(
+        private readonly Driver $cacheDriver,
         private readonly ?int $page = null,
         private readonly ?string $order = null,
         private readonly ?SortDirection $sort = null,
@@ -30,6 +36,16 @@ final class ListReviewsRequest extends Request implements Paginatable
         if (null !== $order && '' === trim($order)) {
             throw new \InvalidArgumentException('The Kikoeru review order must not be empty.');
         }
+    }
+
+    public function resolveCacheDriver(): Driver
+    {
+        return $this->cacheDriver;
+    }
+
+    public function cacheExpiryInSeconds(): int
+    {
+        return 300;
     }
 
     public function resolveEndpoint(): string

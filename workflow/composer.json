@@ -3,12 +3,16 @@
   "description": "For create Alfred workflow easily",
   "type": "project",
   "require": {
-    "php": ">=8.3",
+    "php": "^8.3",
+    "psr/simple-cache": "^3.0",
+    "saloonphp/cache-plugin": "^3.1",
     "saloonphp/pagination-plugin": "^2.3",
-    "saloonphp/saloon": "^4.0"
+    "saloonphp/saloon": "^4.0",
+    "symfony/cache": "^7.4"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.95",
+    "phpcompatibility/php-compatibility": "^10.0.0@dev",
     "phpstan/phpstan": "^2.2"
   },
   "license": "MIT",
@@ -19,7 +23,13 @@
     }
   ],
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "platform": {
+      "php": "8.3.0"
+    },
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
   },
   "autoload-dev": {
     "psr-4": {

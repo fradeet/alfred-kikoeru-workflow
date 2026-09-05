@@ -6,7 +6,7 @@ the workflow's core logic separate from Alfred-specific JSON and output handling
 ## Requirements
 
 - macOS with [Alfred](https://www.alfredapp.com/)
-- PHP 8.4.1 or later
+- PHP 8.3 or later
 - [Composer](https://getcomposer.org/)
 
 ## Installation
@@ -114,36 +114,6 @@ dependencies are installed in `workflow/vendor`, the packager first runs
 package. The remaining packaging happens from a temporary copy, where
 `.DS_Store` files are removed and variables listed in `variablesdontexport` are
 cleared without modifying their source files.
-
-## Customize the workflow
-
-- Add one executable PHP file under `workflow/src/AlfredAdapters/` for each
-  operation exposed to Alfred. Use a PascalCase business name and begin the file
-  with `#!/usr/bin/env php`.
-- Read Alfred inputs in the operation adapter, call the core class, and adapt its
-  plain return value into the required Alfred response type.
-- Put Alfred data classes and enums in `AlfredAdapters/Type`, one type per file.
-  Put reusable input, output, environment, and error-handling functions in
-  `AlfredAdapters/Support`.
-- Put Alfred-independent business logic in `workflow/src/` under the
-  `Workflow` namespace. Core classes should accept explicit inputs and
-  return plain PHP values.
-- After adding or renaming classes or Support files, refresh Composer's
-  autoloader:
-
-  ```bash
-  composer dump-autoload --working-dir=workflow --optimize
-  ```
-
-## Development checks
-
-Run the example and the project checks before committing changes:
-
-```bash
-workflow/src/AlfredAdapters/Hello.php
-(cd workflow && vendor/bin/phpstan analyse src --debug --no-progress)
-(cd workflow && vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no --sequential)
-```
 
 ## License
 

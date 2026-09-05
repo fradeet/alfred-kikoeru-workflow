@@ -1,63 +1,46 @@
-# Project Organization Conventions
+# ◉ 项目概况
 
-## Two-Layer Architecture
+这是一个 Alfred 工作流的 PHP 脚本模版，同时给其他的软件预留的集成空间。
 
-Keep the call direction strictly one-way:
+Alfred 通常执行位于 `workflow/src/AlfredAdapters` 的编写的任务脚本，使用命令的方式调用。
 
-```text
-Alfred -> executable PHP adapter -> core class
-```
+# ◉ 项目结构
 
-### 1. Alfred Adapter Layer
+在执行时，Alfred 的项目根目录是 `workflow`。
 
-- Put Alfred-facing PHP adapters directly in `workflow/src/AlfredAdapters/`.
-- Provide one executable adapter for each business operation that Alfred can invoke. Use a PascalCase business name, for example `workflow/src/AlfredAdapters/Hello.php`.
-- Start each adapter with `#!/usr/bin/env php`, make it executable, and resolve files relative to its own directory so execution does not depend on the current working directory.
-- Read CLI input and Alfred environment variables in this layer, then pass required values explicitly to the core class.
-- Load core classes and Alfred types through `workflow/vendor/autoload.php`;
-- Convert plain core return values into Alfred response types and write the encoded response to standard output.
-- Keep adapters business-specific and thin. Do not put reusable business rules in them.
+	workflow/src/
+	├── AlfredAdapters/   # 用于将核心逻辑返回的结果处理为 Alfred 的格式
+	├── xxxSdk/           # HTTP 请求 SDK，使用 Saloon
+	└── foo.php           # 核心逻辑，独立与各个软件平台的逻辑。
 
-Reusable Alfred-specific code lives below the adapter directory:
+# ◉ 技术要点
 
-- Put each Alfred response data class or enum in its own file under `workflow/src/AlfredAdapters/Type/` using the `Workflow\AlfredAdapters\Type` namespace.
-- Put shared adapter functions under `workflow/src/AlfredAdapters/Support/` using the `Workflow\AlfredAdapters\Support` namespace.
-- Register shared function files through Composer's `autoload.files`; do not require them from individual adapters.
-- Keep CLI validation, Alfred environment access, JSON encoding, common error responses, and output handling in Support.
+- 核心逻辑（平台通用逻辑）与平台独有逻辑分离
+- 每个业务单独一个文件，并对应平台中的一个命令，例如 Hello。
+- 在核心层，可以独立出共享逻辑为一个新类。
 
-### 2. Core Layer
 
-- Keep all logic that has no direct dependency on Alfred in `workflow/src/`, outside `AlfredAdapters/`.
-- Place each core class in the `Workflow` namespace and follow PSR-4: the class name must match the filename.
-- Core classes must not read Alfred environment variables or depend on Alfred user data implicitly. Pass required values to them explicitly.
-- Core classes must return plain PHP values. They must not contain Alfred response structures, JSON fields, or console output logic.
+## 测试与验证
 
-## Loading and Running
+主要检查语法静态错误与 PHP 兼容性。
 
-- Composer maps `Workflow\` to `workflow/src/` and loads Support functions as configured in `workflow/composer.json`.
-- Invoke an adapter directly as `workflow/src/AlfredAdapters/<Operation>.php [argument ...]`. Every positional argument belongs to that business operation and its boundary must be preserved.
-- Calling the same entry through PHP, for example `php workflow/src/AlfredAdapters/Hello.php`, must also work.
-- After adding or renaming classes or Support files, run `composer dump-autoload --working-dir=workflow --optimize`.
-- Run the Hello example with `workflow/src/AlfredAdapters/Hello.php`.
+检查静态错误使用 PHPStan。
 
-## Alfred Output
+检查兼容性使用 PHPCompatibility。
 
-- On successful execution, standard output must contain valid Alfred JSON without logs or debugging text.
-- CLI and business errors must be converted to valid Alfred error JSON on standard output and return a non-zero exit status.
-- Encode JSON with `JSON_THROW_ON_ERROR` so encoding failures are not silently ignored.
-- Script Filter results belong in the top-level `items` array and use `title` for their title.
-- The current Hello example outputs `{"items":[{"title":"Hello Alfred"}]}`.
+	vendor/bin/phpcs -ps src --standard=PHPCompatibility
 
-## Verification
+相关项目：[PHPCompatibility](https://github.com/PHPCompatibility/PHPCompatibility)
 
-Run at least the following commands after making changes:
+# ◉ 项目架构
 
-```bash
-find workflow/src -name '*.php' -print0 | xargs -0 -n1 php -l
-workflow/src/AlfredAdapters/Hello.php
-workflow/src/AlfredAdapters/Hello.php "Ada Lovelace" "and team"
-php workflow/src/AlfredAdapters/Hello.php "Ada Lovelace" "and team"
-composer validate --strict --no-check-publish workflow/composer.json
-(cd workflow && vendor/bin/phpstan analyse src --debug --no-progress)
-(cd workflow && vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no --sequential)
-```
+项目的一个命令的请求周期，会经过：“命令 -> 核心处理 -> 格式输出”一整个流程。
+
+- 命令与输出：位于 `<xxx>Adapter/` 文件夹，用于接收用户的命令，并输出指定的格式。
+- 处理：位于 `src/` 文件夹，处理用户逻辑的命令都在这里。
+
+# ◉ 对外边界
+
+以下内容用于对外交互，修改他们可能会造成不兼容改动，修改时要注意：
+
+- `<xxx>Adapter/xxx.php`：这些是 CLI 调用的入口，如果没有要求需要保持一致。
