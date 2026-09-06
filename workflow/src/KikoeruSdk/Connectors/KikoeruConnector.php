@@ -11,15 +11,27 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\HasPagination;
 use Saloon\PaginationPlugin\PagedPaginator;
+use Workflow\KikoeruSdk\Auth\LoginCredentials;
+use Workflow\KikoeruSdk\Auth\UserSession;
+use Workflow\KikoeruSdk\Auth\UserSessionCache;
+use Workflow\KikoeruSdk\Dto\CurrentUserResponse;
 use Workflow\KikoeruSdk\Dto\ListReviewsResponse;
+use Workflow\KikoeruSdk\Dto\LoginResponse;
 use Workflow\KikoeruSdk\Dto\ReviewWork;
+use Workflow\KikoeruSdk\Exceptions\LoginFailedException;
+use Workflow\KikoeruSdk\Requests\GetCurrentUserRequest;
+use Workflow\KikoeruSdk\Requests\LoginRequest;
 
 final class KikoeruConnector extends Connector implements HasPagination
 {
     private readonly string $apiBaseUrl;
 
-    public function __construct(string $apiBaseUrl, private readonly ?string $token = null)
-    {
+    public function __construct(
+        string $apiBaseUrl,
+        private readonly ?string $token = null,
+        private readonly ?LoginCredentials $credentials = null,
+        private readonly ?UserSessionCache $sessionCache = null,
+    ) {
         $apiBaseUrl = rtrim(trim($apiBaseUrl), '/');
 
         if (false === filter_var($apiBaseUrl, FILTER_VALIDATE_URL)) {
@@ -36,12 +48,50 @@ final class KikoeruConnector extends Connector implements HasPagination
             throw new \InvalidArgumentException('The Kikoeru API token must not be empty.');
         }
 
+        if ((null === $credentials) !== (null === $sessionCache)) {
+            throw new \InvalidArgumentException('Kikoeru login credentials and the user-session cache must be configured together.');
+        }
+
         $this->apiBaseUrl = $apiBaseUrl;
     }
 
     public function resolveBaseUrl(): string
     {
         return $this->apiBaseUrl;
+    }
+
+    public function userSession(): UserSession
+    {
+        [$credentials, $sessionCache] = $this->authenticationConfiguration();
+
+        return $sessionCache->get($this->apiBaseUrl, $credentials->name)
+            ?? $this->login($credentials, $sessionCache);
+    }
+
+    /**
+     * Send an authenticated request, refreshing an expired login and retrying once.
+     *
+     * @throws LoginFailedException when login fails or the retried request is still unauthorized
+     */
+    public function sendAuthenticated(Request $request): Response
+    {
+        [$credentials, $sessionCache] = $this->authenticationConfiguration();
+        $response = $this->sendWithSession($request, $this->userSession());
+
+        if (!$this->isUnauthorized($response)) {
+            return $response;
+        }
+
+        $sessionCache->forget($this->apiBaseUrl, $credentials->name);
+        $response = $this->sendWithSession($request, $this->login($credentials, $sessionCache));
+
+        if ($this->isUnauthorized($response)) {
+            $sessionCache->forget($this->apiBaseUrl, $credentials->name);
+
+            throw new LoginFailedException('Kikoeru login failed after refreshing the expired user session.');
+        }
+
+        return $response;
     }
 
     public function paginate(Request $request): PagedPaginator
@@ -100,5 +150,64 @@ final class KikoeruConnector extends Connector implements HasPagination
     protected function defaultAuth(): ?Authenticator
     {
         return null === $this->token ? null : new TokenAuthenticator($this->token);
+    }
+
+    /** @return array{LoginCredentials, UserSessionCache} */
+    private function authenticationConfiguration(): array
+    {
+        if (null === $this->credentials || null === $this->sessionCache) {
+            throw new \LogicException('Kikoeru login credentials and the user-session cache are required for authenticated requests.');
+        }
+
+        return [$this->credentials, $this->sessionCache];
+    }
+
+    private function login(LoginCredentials $credentials, UserSessionCache $sessionCache): UserSession
+    {
+        try {
+            $connector = new self($this->apiBaseUrl);
+            $loginResponse = $connector->send(new LoginRequest($credentials->name, $credentials->password));
+
+            if ($loginResponse->failed()) {
+                throw new LoginFailedException(sprintf('Kikoeru login returned HTTP %d.', $loginResponse->status()));
+            }
+
+            $login = $loginResponse->dto();
+
+            if (!$login instanceof LoginResponse) {
+                throw new \UnexpectedValueException('The Kikoeru login response did not create a LoginResponse DTO.');
+            }
+
+            $currentUserResponse = (new self($this->apiBaseUrl, $login->token))->send(new GetCurrentUserRequest());
+
+            if ($currentUserResponse->failed()) {
+                throw new LoginFailedException(sprintf('Loading the Kikoeru user returned HTTP %d.', $currentUserResponse->status()));
+            }
+
+            $currentUser = $currentUserResponse->dto();
+
+            if (!$currentUser instanceof CurrentUserResponse) {
+                throw new \UnexpectedValueException('The Kikoeru current-user response did not create a CurrentUserResponse DTO.');
+            }
+
+            $session = new UserSession($login->token, $currentUser->user, $currentUser->auth);
+            $sessionCache->put($this->apiBaseUrl, $credentials->name, $session);
+
+            return $session;
+        } catch (LoginFailedException $exception) {
+            throw $exception;
+        } catch (\Throwable $exception) {
+            throw new LoginFailedException('Unable to log in to Kikoeru.', 0, $exception);
+        }
+    }
+
+    private function sendWithSession(Request $request, UserSession $session): Response
+    {
+        return $this->authenticate(new TokenAuthenticator($session->token))->send($request);
+    }
+
+    private function isUnauthorized(Response $response): bool
+    {
+        return 401 === $response->status();
     }
 }
