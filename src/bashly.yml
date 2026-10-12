@@ -9,6 +9,13 @@ environment_variables:
   - name: alfred_workflow_description
   - name: alfred_workflow_name
 
+flags:
+  - long: --format
+    short: -f
+    allowed: [alfred]
+    help: Output format
+    required: true
+
 dependencies:
   - curl
   - jq
