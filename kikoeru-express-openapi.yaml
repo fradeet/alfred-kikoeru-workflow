@@ -1,9 +1,60 @@
 openapi: 3.1.0
 info:
-  title: Kikoeru 登录 API
+  title: Kikoeru API
   version: 1.0.0
 paths:
   /api/auth/me:
+    get:
+      operationId: getCurrentUser
+      summary: 获取当前用户信息
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+        - {}
+      responses:
+        '200':
+          description: 当前用户信息及服务器是否启用认证。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUserResponse'
+              examples:
+                authenticated:
+                  summary: 已启用认证
+                  value:
+                    user:
+                      name: example-user
+                      group: user
+                    auth: true
+                authenticationDisabled:
+                  summary: 已关闭认证
+                  value:
+                    user:
+                      name: admin
+                      group: administrator
+                    auth: false
+        '401':
+          description: 启用认证时，token 缺失、无效或已过期。
+          headers:
+            WWW-Authenticate:
+              schema:
+                type: string
+                const: 'Bearer realm="Authorization Required"'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missingToken:
+                  value:
+                    error: No authorization token was found
+                invalidToken:
+                  value:
+                    error: invalid token
+                expiredToken:
+                  value:
+                    error: jwt expired
     post:
       operationId: login
       summary: 用户登录
@@ -74,7 +125,35 @@ paths:
               example:
                 error: 服务器错误
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
+    CurrentUserResponse:
+      type: object
+      required:
+        - user
+        - auth
+      properties:
+        user:
+          $ref: '#/components/schemas/UserIdentity'
+        auth:
+          type: boolean
+          description: 服务器是否启用用户认证。
+    UserIdentity:
+      type: object
+      required:
+        - name
+        - group
+      properties:
+        name:
+          type: string
+          description: 用户名。
+        group:
+          type: string
+          description: 用户所属组，如 user 或 administrator。
     LoginRequest:
       type: object
       required:
