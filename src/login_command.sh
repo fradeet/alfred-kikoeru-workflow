@@ -1,7 +1,12 @@
+name="${args[name]}"
+password="${args[password]}"
+format="${args[--format]}"
+kikoeru_api_url="$KIKOERU_API_URL"
+
 # Payload
 payload=$(jq -n \
-    --arg name "${args[name]}" \
-    --arg password "${args[password]}" \
+    --arg name "$name" \
+    --arg password "$password" \
     '{name: $name, password: $password}')
 
 # POST request
@@ -10,7 +15,7 @@ if response=$(curl -sS \
     --header 'Content-Type: application/json' \
     --data "$payload" \
     --write-out $'\n%{http_code}' \
-    "$KIKOERU_API_URL/auth/me"); then
+    "$kikoeru_api_url/auth/me"); then
     :
 else
     echo "Error: Login request failed, unable to connect to API." >&2
@@ -23,7 +28,9 @@ body="${response%$'\n'*}"
 # HTTP 200 Success
 if [[ "$http_code" == "200" ]]; then
     if token=$(jq -er '.token | strings | select(length > 0)' <<< "$body"); then
-        printf '%s\n' "$token"
+        if [[ "$format" == "alfred" ]]; then
+            printf '%s\n' "$token"
+        fi
     else
         echo "Error: Missing token in response." >&2
         exit 1
