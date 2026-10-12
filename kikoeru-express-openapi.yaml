@@ -1,0 +1,139 @@
+openapi: 3.1.0
+info:
+  title: Kikoeru 登录 API
+  version: 1.0.0
+paths:
+  /api/auth/me:
+    post:
+      operationId: login
+      summary: 用户登录
+      description: |
+        使用用户名和密码获取 JWT。此接口无需 Bearer token。
+        后端从请求体读取 name 和 password，并校验两者长度至少为 5。
+      tags:
+        - Auth
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              name: admin
+              password: your-password
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: 登录成功，仅返回 JWT。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              example:
+                token: '<JWT>'
+        '401':
+          description: 用户名或密码错误。
+          headers:
+            WWW-Authenticate:
+              description: Bearer 认证提示。
+              schema:
+                type: string
+                enum:
+                  - 'Bearer realm="Authorization Required"'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: 用户名或密码错误.
+        '422':
+          description: 参数缺失或长度不足，errors 可包含多个校验错误。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+              example:
+                errors:
+                  - value: abc
+                    msg: 用户名长度至少为 5
+                    param: name
+                    location: body
+                  - value: '123'
+                    msg: 密码长度至少为 5
+                    param: password
+                    location: body
+        '500':
+          description: 数据库查询或 JWT 生成等登录处理发生异常。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: 服务器错误
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - name
+        - password
+      properties:
+        name:
+          type: string
+          minLength: 5
+          description: 用户名。字段名为 name。
+          example: admin
+        password:
+          type: string
+          format: password
+          minLength: 5
+          description: 密码
+          example: your-password
+    LoginResponse:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          description: JWT，包含 name、group、iss、sub、aud、iat、exp 等声明。后续请求使用 Authorization Bearer 认证。
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+    ValidationErrorResponse:
+      type: object
+      required:
+        - errors
+      properties:
+        errors:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ValidationError'
+    ValidationError:
+      type: object
+      required:
+        - msg
+        - param
+        - location
+      properties:
+        value:
+          description: 未通过校验的原始值；参数缺失时此字段可能省略。
+        msg:
+          type: string
+          example: 用户名长度至少为 5
+        param:
+          type: string
+          description: 未通过校验的参数名。
+          example: name
+        location:
+          type: string
+          description: 参数来源。正常从请求体提交时为 body。
+          example: body

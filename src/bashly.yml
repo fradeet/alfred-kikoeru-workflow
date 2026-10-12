@@ -1,0 +1,33 @@
+name: kikoeru
+help: An ASMR platform
+version: 0.1.0
+
+environment_variables:
+  - name: alfred_debug
+  - name: alfred_workflow_cache
+  - name: alfred_workflow_data
+  - name: alfred_workflow_description
+  - name: alfred_workflow_name
+
+dependencies:
+  - curl
+  - jq
+
+commands:
+  - name: login
+    help: Login to the Kikoeru platform
+
+    args:
+      - name: name
+        required: true
+        help: Username to use for logging in
+      - name: password
+        required: true
+        help: Password to use for logging in
+
+    examples:
+      - kikoeru login <username> <password>
+
+    environment_variables:
+      - name: default_target_location
+        help: Set the default location to download to
