@@ -8,6 +8,10 @@ environment_variables:
   - name: alfred_workflow_data
   - name: alfred_workflow_description
   - name: alfred_workflow_name
+  - name: KIKOERU_API_URL
+    required: true
+    help: The kikoeru api endpoint, like https://api.example.com/api .
+
 
 flags:
   - long: --format
