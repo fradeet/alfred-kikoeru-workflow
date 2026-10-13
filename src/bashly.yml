@@ -5,12 +5,10 @@ version: 0.1.0
 environment_variables:
   - name: alfred_debug
     help: This variable is only set if is debugging, and is set to value 1.
+    private: true
   - name: alfred_workflow_cache
-  - name: alfred_workflow_data
-  - name: alfred_workflow_description
-    help: Description of the running workflow.
-  - name: alfred_workflow_name
-    help: Name of the running workflow.
+    help: Path to the alfred workflow cache directory, required for alfred output format.
+    private: true
   - name: KIKOERU_API_URL
     required: true
     help: The kikoeru api endpoint, like https://api.example.com/api .
