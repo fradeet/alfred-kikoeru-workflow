@@ -1,6 +1,6 @@
 name="${args[name]}"
 password="${args[password]}"
-format="${args[--format]}"
+output_format="${args[--output-format]}"
 kikoeru_api_url="$KIKOERU_API_URL"
 
 # Payload
@@ -22,13 +22,15 @@ else
     exit 1
 fi
 
+log_verbose "$response"
+
 http_code="${response##*$'\n'}"
 body="${response%$'\n'*}"
 
 # HTTP 200 Success
 if [[ "$http_code" == "200" ]]; then
     if token=$(jq -er '.token | strings | select(length > 0)' <<< "$body"); then
-        if [[ "$format" == "alfred" ]]; then
+        if [[ "$output_format" == "alfred" ]]; then
             printf '%s\n' "$token"
         fi
     else

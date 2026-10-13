@@ -9,7 +9,6 @@ environment_variables:
 
 flags:
   - long: --output-format
-    short: -f
     arg: name
     allowed: [alfred]
     help: Output format [alfred]
@@ -19,7 +18,6 @@ flags:
     help: Increase output verbosity (up to -v)
     repeatable: true
   - long: --cache-dir
-    short: -c
     arg: path
     required: true
     help: Path to the cache directory
