@@ -6,6 +6,12 @@ environment_variables:
   - name: KIKOERU_API_URL
     required: true
     help: The kikoeru api endpoint, like https://api.example.com/api .
+  - name: KIKOERU_USERNAME
+    required: true
+    help: Username to use for logging in
+  - name: KIKOERU_PASSWORD
+    required: true
+    help: Password to use for logging in
 
 flags:
   - long: --verbose
@@ -16,6 +22,11 @@ flags:
     arg: path
     required: true
     help: Path to the cache directory
+  - long: --output-format
+    arg: name
+    allowed:
+      - alfred
+    help: Output format
 
 dependencies:
   - curl
@@ -23,23 +34,8 @@ dependencies:
   - date
 
 commands:
-  - name: login
-    help: Login to the Kikoeru platform
-
-    args:
-      - name: name
-        required: true
-        help: Username to use for logging in
-      - name: password
-        required: true
-        help: Password to use for logging in
-
-    flags:
-      - long: --output-format
-        arg: name
-        allowed:
-          - json
-        help: Output format
+  - name: review
+    help: Reviewed works on Kikoeru platform
 
     examples:
-      - kikoeru login <username> <password>
+      - kikoeru review
