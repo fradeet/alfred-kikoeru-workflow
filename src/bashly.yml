@@ -42,7 +42,3 @@ commands:
 
     examples:
       - kikoeru login <username> <password>
-
-    environment_variables:
-      - name: default_target_location
-        help: Set the default location to download to
