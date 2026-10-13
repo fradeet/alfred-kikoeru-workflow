@@ -39,7 +39,6 @@ commands:
         allowed:
           - json
         help: Output format
-        required: true
 
     examples:
       - kikoeru login <username> <password>
