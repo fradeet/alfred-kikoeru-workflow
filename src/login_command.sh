@@ -37,14 +37,14 @@ if [[ "$output_format" == "alfred" ]]; then
               error: null
             }' >&1
         else
-            echo '{
+            jq -cn '{
                   success: false,
                   data: null,
                   error: {
-                    code: login_missing_token,
+                    code: null,
                     message: "Error: Missing token in response."
                   }
-                }'
+                }' >&1
             exit 1
         fi
     else
