@@ -13,7 +13,6 @@ environment_variables:
     required: true
     help: The kikoeru api endpoint, like https://api.example.com/api .
 
-
 flags:
   - long: --format
     short: -f
@@ -21,6 +20,10 @@ flags:
     allowed: [alfred]
     help: Output format [alfred]
     required: true
+  - long: --verbose
+    short: -v
+    help: Increase output verbosity (up to -vv)
+    repeatable: true
 
 dependencies:
   - curl
