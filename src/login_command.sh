@@ -22,23 +22,55 @@ else
     exit 1
 fi
 
-log_verbose "$response"
+log_verbose "Kikoeru login response: ${response}"
 
 http_code="${response##*$'\n'}"
 body="${response%$'\n'*}"
 
 # HTTP 200 Success
-if [[ "$http_code" == "200" ]]; then
-    if token=$(jq -er '.token | strings | select(length > 0)' <<< "$body"); then
-        if [[ "$output_format" == "alfred" ]]; then
-            printf '%s\n' "$token"
+if [[ "$output_format" == "alfred" ]]; then
+    if [[ "$http_code" == "200" ]]; then
+        if token=$(jq -er '.token | strings | select(length > 0)' <<< "$body"); then
+            jq -cn --arg token "$token" '{
+              success: true,
+              data: {token: $token},
+              error: null
+            }' >&1
+        else
+            echo '{
+                  success: false,
+                  data: null,
+                  error: {
+                    code: login_missing_token,
+                    message: "Error: Missing token in response."
+                  }
+                }'
+            exit 1
         fi
     else
-        echo "Error: Missing token in response." >&2
+        error=$(jq -r '.error // "Unknown error"' <<< "$body" 2>/dev/null || true)
+        jq -cn \
+            --arg message "$error" '{
+              success: false,
+              data: null,
+              error: {
+                code: null,
+                message: $message
+              }
+            }' >&1
         exit 1
     fi
 else
-    error=$(jq -r '.error // "Unknown error"' <<< "$body" 2>/dev/null || true)
-    printf 'Login failed（HTTP %s）：%s\n' "$http_code" "${error:-Unknown error}" >&2
-    exit 1
+    if [[ "$http_code" == "200" ]]; then
+        if token=$(jq -er '.token | strings | select(length > 0)' <<< "$body"); then
+            printf '%s\n' "$token"
+        else
+            echo "Error: Missing token in response." >&2
+            exit 1
+        fi
+    else
+        error=$(jq -r '.error // "Unknown error"' <<< "$body" 2>/dev/null || true)
+        printf 'Login failed（HTTP %s）：%s\n' "$http_code" "${error:-Unknown error}" >&2
+        exit 1
+    fi
 fi
