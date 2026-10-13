@@ -3,18 +3,12 @@ help: An ASMR platform
 version: 0.1.0
 
 environment_variables:
-  - name: alfred_debug
-    help: This variable is only set if is debugging, and is set to value 1.
-    private: true
-  - name: alfred_workflow_cache
-    help: Path to the alfred workflow cache directory, required for alfred output format.
-    private: true
   - name: KIKOERU_API_URL
     required: true
     help: The kikoeru api endpoint, like https://api.example.com/api .
 
 flags:
-  - long: --format
+  - long: --output-format
     short: -f
     arg: name
     allowed: [alfred]
@@ -22,8 +16,12 @@ flags:
     required: true
   - long: --verbose
     short: -v
-    help: Increase output verbosity (up to -vv)
+    help: Increase output verbosity (up to -v)
     repeatable: true
+  - long: --cache-dir
+    short: -c
+    arg: path
+    help: Path to the cache directory
 
 dependencies:
   - curl
