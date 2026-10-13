@@ -43,7 +43,8 @@ if [[ "$output_format" == "json" ]]; then
             if ! jq -n \
                 --arg username "$username" \
                 --arg token "$token" \
-                '{username: $username, token: $token}' \
+                --arg expires_at $(( $(date +%s) + 86400 )) \
+                '{username: $username, token: $token, expires_at: $expires_at}' \
                 > "$cache_dir/auth.json"; then
                     json_error_output 'null' 'Error: failed to save auth cache.'
                 return 1
