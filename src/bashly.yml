@@ -21,6 +21,7 @@ flags:
   - long: --cache-dir
     short: -c
     arg: path
+    required: true
     help: Path to the cache directory
 
 dependencies:
