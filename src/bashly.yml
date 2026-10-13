@@ -21,7 +21,7 @@ flags:
     short: -f
     arg: name
     allowed: [alfred]
-    help: Output format
+    help: Output format [alfred]
     required: true
 
 dependencies:
