@@ -18,7 +18,7 @@ if response=$(curl -sS \
     "$kikoeru_api_url/auth/me"); then
     :
 else
-    echo "Error: Login request failed, unable to connect to API." >&2
+    echo 'Error: Login request failed, unable to connect to API.' >&2
     exit 1
 fi
 
@@ -28,9 +28,28 @@ http_code="${response##*$'\n'}"
 body="${response%$'\n'*}"
 
 # HTTP 200 Success
-if [[ "$output_format" == "alfred" ]]; then
+if [[ "$output_format" == "json" ]]; then
     if [[ "$http_code" == "200" ]]; then
         if token=$(jq -er '.token | strings | select(length > 0)' <<< "$body"); then
+            # Cache
+
+            # Create cache directory
+            if ! mkdir -p "$cache_dir"; then
+                json_error_output 'null' 'Error: failed to create cache directory.'
+                return 1
+            fi
+
+            # Save data
+            if ! jq -n \
+                --arg username "$username" \
+                --arg token "$token" \
+                '{username: $username, token: $token}' \
+                > "$cache_dir/auth.json"; then
+                    json_error_output 'null' 'Error: failed to save auth cache.'
+                return 1
+            fi
+
+            # Output
             jq -cn --arg token "$token" '{
               success: true,
               data: {token: $token},

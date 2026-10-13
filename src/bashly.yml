@@ -8,11 +8,6 @@ environment_variables:
     help: The kikoeru api endpoint, like https://api.example.com/api .
 
 flags:
-  - long: --output-format
-    arg: name
-    allowed: [alfred]
-    help: Output format [alfred]
-    required: true
   - long: --verbose
     short: -v
     help: Increase output verbosity (up to -v)
@@ -37,6 +32,14 @@ commands:
       - name: password
         required: true
         help: Password to use for logging in
+
+    flags:
+      - long: --output-format
+        arg: name
+        allowed:
+          - json
+        help: Output format
+        required: true
 
     examples:
       - kikoeru login <username> <password>
