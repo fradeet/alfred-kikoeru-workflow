@@ -3,6 +3,184 @@ info:
   title: Kikoeru API
   version: 1.0.0
 paths:
+  /api/review:
+    get:
+      operationId: listReviews
+      summary: 获取当前用户有评价或标记的作品
+      tags: [Review]
+      security:
+        - bearerAuth: []
+        - {}
+      parameters:
+        - name: page
+          in: query
+          description: 页码。后端仅校验整数，0 会按默认页码 1 处理。
+          schema:
+            type: integer
+            default: 1
+        - name: order
+          in: query
+          description: 排序字段，如 id、release、userRating、dl_count、review_count、price、rate_average_2dp、nsfw。
+          schema:
+            type: string
+            default: release
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [desc, asc]
+            default: desc
+        - name: filter
+          in: query
+          description: 按收听状态筛选。不传时返回全部评价记录。
+          schema:
+            $ref: '#/components/schemas/ReviewProgress'
+        - name: seed
+          in: query
+          description: 后端校验为整数，但当前查询逻辑未使用此参数。
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 作品及评价信息，按服务器配置的 pageSize 分页，未配置时每页 12 条。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListReviewsResponse'
+              example:
+                works: []
+                pagination:
+                  currentPage: 1
+                  pageSize: 12
+                  totalCount: 0
+        '400':
+          $ref: '#/components/responses/ReviewValidationError'
+        '401':
+          $ref: '#/components/responses/ReviewUnauthorized'
+        '500':
+          description: 查询失败。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: 查询过程中出错
+    put:
+      operationId: upsertReview
+      summary: 添加或更新评分、评语、收听进度
+      description: |
+        默认仅更新评分。仅更新进度时使用 ?starOnly=false&progressOnly=true；
+        同时更新评分、评语和进度时使用 ?starOnly=false。
+        后端实际从 Query 读取控制参数，且仅识别字面值 false 和 true。
+        请求体中的同名字段虽然会被校验，但不控制更新方式。
+        starOnly 分支优先：如果两者都为 true，实际仅更新评分，响应仍为“更新进度成功”。
+        全量更新时，省略 review_text 或 progress 会将其设为空字符串。
+        rating 虽为可选字段，但评分更新分支省略该字段可能引发数据库错误。
+      tags: [Review]
+      security:
+        - bearerAuth: []
+        - {}
+      parameters:
+        - name: starOnly
+          in: query
+          description: 是否仅更新评分。只有传 false 才会关闭此模式。
+          schema:
+            type: boolean
+            default: true
+        - name: progressOnly
+          in: query
+          description: 是否仅更新进度。需同时设置 starOnly=false。
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertReviewRequest'
+            examples:
+              rating:
+                summary: 默认仅更新评分
+                value:
+                  work_id: 123456
+                  rating: 5
+              progress:
+                summary: 配合 starOnly=false&progressOnly=true 更新进度
+                value:
+                  work_id: 123456
+                  progress: listened
+              full:
+                summary: 配合 starOnly=false 更新全部字段
+                value:
+                  work_id: 123456
+                  rating: 5
+                  review_text: 很喜欢这部作品
+                  progress: listened
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpsertReviewRequest'
+      responses:
+        '200':
+          description: 更新成功。响应消息取决于 Query 中 progressOnly 是否为 true。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              examples:
+                review:
+                  value:
+                    message: 评价成功
+                progress:
+                  value:
+                    message: 更新进度成功
+        '400':
+          $ref: '#/components/responses/ReviewValidationError'
+        '401':
+          $ref: '#/components/responses/ReviewUnauthorized'
+        '500':
+          description: 更新失败。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: 评价失败，服务器错误
+    delete:
+      operationId: deleteReview
+      summary: 删除当前用户对指定作品的评分、评语和进度
+      tags: [Review]
+      security:
+        - bearerAuth: []
+        - {}
+      parameters:
+        - name: work_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          example: 123456
+      responses:
+        '200':
+          description: 删除成功，即使记录不存在也返回此响应。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: 删除标记成功
+        '400':
+          $ref: '#/components/responses/ReviewValidationError'
+        '401':
+          $ref: '#/components/responses/ReviewUnauthorized'
+        '500':
+          description: 使用全局错误处理，生产环境通常返回服务器错误，开发环境可能返回具体错误信息。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: 服务器错误
   /api/auth/me:
     get:
       operationId: getCurrentUser
@@ -125,12 +303,112 @@ paths:
               example:
                 error: 服务器错误
 components:
+  responses:
+    ReviewValidationError:
+      description: 参数校验失败。review 接口使用 HTTP 400。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+          example:
+            errors:
+              - value: abc
+                msg: Invalid value
+                param: work_id
+                location: query
+    ReviewUnauthorized:
+      description: 启用认证时，token 缺失、无效或已过期。
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+            const: 'Bearer realm="Authorization Required"'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: No authorization token was found
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    ReviewProgress:
+      type: string
+      enum: [marked, listening, listened, replay, postponed]
+    UpsertReviewRequest:
+      type: object
+      required: [work_id]
+      properties:
+        work_id:
+          type: integer
+        rating:
+          type: [integer, 'null']
+          description: 用户评分，后端仅校验整数，未限制为 1～5。
+        review_text:
+          description: 评语，后端未做类型校验。建议传字符串。
+          examples: [很喜欢这部作品]
+        progress:
+          anyOf:
+            - $ref: '#/components/schemas/ReviewProgress'
+            - type: 'null'
+        starOnly:
+          type: [boolean, 'null']
+          description: 请求体中仅校验此字段，不控制更新方式。请使用 Query 参数。
+        progressOnly:
+          type: [boolean, 'null']
+          description: 请求体中仅校验此字段，不控制更新方式。请使用 Query 参数。
+    ListReviewsResponse:
+      type: object
+      required: [works, pagination]
+      properties:
+        works:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewWork'
+        pagination:
+          $ref: '#/components/schemas/ReviewPagination'
+    ReviewWork:
+      type: object
+      description: 作品元数据及当前用户的评价。其他作品元数据字段随数据库视图返回。
+      additionalProperties: true
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        userRating:
+          type: [integer, 'null']
+        review_text:
+          type: [string, 'null']
+        progress:
+          type: [string, 'null']
+          description: 收听状态，也可能为 null 或空字符串。
+        updated_at:
+          type: [string, 'null']
+          description: 更新时间，路由将非空值格式化为日期。
+        user_name:
+          type: string
+        nsfw:
+          type: boolean
+    ReviewPagination:
+      type: object
+      required: [currentPage, pageSize, totalCount]
+      properties:
+        currentPage:
+          type: integer
+        pageSize:
+          type: integer
+        totalCount:
+          type: integer
+    MessageResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
     CurrentUserResponse:
       type: object
       required:
