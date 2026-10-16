@@ -4,5 +4,5 @@ workflow/.php-cs-fixer.cache
 workflow/prefs.plist
 .DS_Store
 /*.alfredworkflow
-workflow/kikoeru
-/kikoeru
+workflow/kikoeru_cli
+/kikoeru_cli

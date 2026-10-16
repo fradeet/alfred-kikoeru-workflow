@@ -3,9 +3,9 @@
 set -Eeuo pipefail
 
 # Configuration
-SOURCE="./kikoeru"
+SOURCE="./kikoeru_cli"
 WORKFLOW_DIR="./workflow"
-TARGET="${WORKFLOW_DIR}/kikoeru"
+TARGET="${WORKFLOW_DIR}/kikoeru_cli"
 
 bashly generate
 
