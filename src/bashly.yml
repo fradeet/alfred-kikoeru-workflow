@@ -12,23 +12,18 @@ environment_variables:
   - name: KIKOERU_FRONTEND_URL
     required: true
     help: Path to the frontend URL
-  - name: KIKOERU_USERNAME
-    required: true
-    help: Username to use for logging in
   - name: KIKOERU_PASSWORD
     required: true
     help: Password to use for logging in
+  - name: KIKOERU_USERNAME
+    required: true
+    help: Username to use for logging in
 
 flags:
   - long: --verbose
     short: -v
     help: Increase output verbosity (up to -v)
     repeatable: true
-  - long: --output-format
-    arg: name
-    allowed:
-      - alfred
-    help: Output format
 
 dependencies:
   - curl
@@ -39,20 +34,24 @@ commands:
   - name: review
     help: Reviewed works on Kikoeru platform
 
-
   - flags:
       - long: --order
         arg: name
         help: Order by field
+      - long: --output-format
+        arg: name
+        allowed:
+          - alfred
+        help: Output format
+      - long: --page
+        arg: number
+        help: Page number
       - long: --sort
         arg: name
         allowed:
           - asc
           - desc
         help: Sort order
-      - long: --page
-        arg: number
-        help: Page number
 
     examples:
       - kikoeru review
