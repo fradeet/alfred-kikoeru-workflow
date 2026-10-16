@@ -35,7 +35,7 @@ if [[ "$output_format" == "alfred" ]]; then
         exit 1
     fi
 
-    items=$(jq '{
+    items=$(jq -c '{
         items: [
             .works.[] | {
                 title: .title
