@@ -38,7 +38,9 @@ if [[ "$output_format" == "alfred" ]]; then
     items=$(jq -c '{
         items: [
             .works.[] | {
-                title: .title
+                uid: ("work-" + (.id | tostring)),
+                title: .title,
+                arg: .id
             }
         ]
     }' <<< "$body")
