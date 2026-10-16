@@ -39,5 +39,20 @@ commands:
   - name: review
     help: Reviewed works on Kikoeru platform
 
+
+  - flags:
+      - long: --order
+        arg: name
+        help: Order by field
+      - long: --sort
+        arg: name
+        allowed:
+          - asc
+          - desc
+        help: Sort order
+      - long: --page
+        arg: number
+        help: Page number
+
     examples:
       - kikoeru review
