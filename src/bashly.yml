@@ -34,7 +34,7 @@ commands:
   - name: review
     help: Reviewed works on Kikoeru platform
 
-  - flags:
+    flags:
       - long: --order
         arg: name
         help: Order by field
