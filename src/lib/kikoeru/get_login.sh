@@ -1,7 +1,7 @@
 kikoeru_get_login() {
-    local username="$1"
-    local password="$2"
-    local cache_dir="$3"
+    local username="$KIKOERU_USERNAME"
+    local password="$KIKOERU_PASSWORD"
+    local cache_dir="$KIKOERU_CACHE_DIR"
 
     local kikoeru_api_url="$KIKOERU_API_URL"
 

@@ -6,15 +6,18 @@ environment_variables:
   - name: KIKOERU_API_URL
     required: true
     help: The kikoeru api endpoint, like https://api.example.com/api .
+  - name: KIKOERU_CACHE_DIR
+    required: true
+    help: Path to the cache directory
+  - name: KIKOERU_FRONTEND_URL
+    required: true
+    help: Path to the frontend URL
   - name: KIKOERU_USERNAME
     required: true
     help: Username to use for logging in
   - name: KIKOERU_PASSWORD
     required: true
     help: Password to use for logging in
-  - name: KIKOERU_CACHE_DIR
-    required: true
-    help: Path to the cache directory
 
 flags:
   - long: --verbose
