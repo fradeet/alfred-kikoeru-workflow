@@ -372,13 +372,71 @@ components:
           $ref: '#/components/schemas/ReviewPagination'
     ReviewWork:
       type: object
-      description: 作品元数据及当前用户的评价。其他作品元数据字段随数据库视图返回。
+      description: |
+        作品元数据及当前用户的评价。
       additionalProperties: true
       properties:
         id:
           type: integer
         title:
           type: string
+        circle_id:
+          type: integer
+          description: 社团 ID。
+        name:
+          type: string
+          description: 社团名称，与 circle.name 相同。
+        circle:
+          type: object
+          description: 社团信息。
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        release:
+          type: [string, 'null']
+          description: 发售日期，通常为 YYYY-MM-DD。
+        dl_count:
+          type: [integer, 'null']
+          description: 售出数。
+        price:
+          type: [integer, 'null']
+          description: 价格。
+        review_count:
+          type: [integer, 'null']
+          description: 作品评论数量，与当前用户的 review_text 不同。
+        rate_count:
+          type: [integer, 'null']
+          description: 作品评分数量。
+        rate_average_2dp:
+          type: [number, 'null']
+          description: 作品平均评分，与当前用户的 userRating 不同。
+        rate_count_detail:
+          description: 评分分布明细。后端直接解析数据库中的 JSON，可为 null，未约束内部结构。推测直接从 DLsite 抓取。
+        rank:
+          description: 历史销售排名。后端直接解析数据库中的 JSON，未约束内部结构；无数据时为 null。推测直接从 DLsite 抓取。
+        vas:
+          type: array
+          description: 声优列表。
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: 根据声优名称生成的 UUID。
+              name:
+                type: string
+        tags:
+          type: array
+          description: 标签列表。无标签时，当前后端的 LEFT JOIN 聚合可能返回 id 和 name 均为 null 的对象。
+          items:
+            type: object
+            properties:
+              id:
+                type: [integer, 'null']
+              name:
+                type: [string, 'null']
         userRating:
           type: [integer, 'null']
         review_text:
