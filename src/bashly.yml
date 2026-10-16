@@ -12,16 +12,15 @@ environment_variables:
   - name: KIKOERU_PASSWORD
     required: true
     help: Password to use for logging in
+  - name: KIKOERU_CACHE_DIR
+    required: true
+    help: Path to the cache directory
 
 flags:
   - long: --verbose
     short: -v
     help: Increase output verbosity (up to -v)
     repeatable: true
-  - long: --cache-dir
-    arg: path
-    required: true
-    help: Path to the cache directory
   - long: --output-format
     arg: name
     allowed:
