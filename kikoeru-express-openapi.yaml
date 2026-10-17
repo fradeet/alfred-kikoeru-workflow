@@ -3,6 +3,66 @@ info:
   title: Kikoeru API
   version: 1.0.0
 paths:
+  /api/cover/{id}:
+    get:
+      operationId: getWorkCover
+      summary: 获取作品封面或缩略图
+      description: |
+        返回 JPEG 图片。缩略图请求示例：/api/cover/123456?type=240x240。
+        id 使用作品的数字 ID，不带 RJ 前缀，可取自 /api/review 返回的 works[].id。
+        后端读取已下载的图片，不会按请求实时缩放；图片不存在时返回默认占位图。
+        默认扫描下载 main、sam 和 240x240，360x360 仅在对应文件存在时可用。
+        开启认证时须提供 Bearer JWT 或 Query 参数 token；Authorization 中的 Bearer 优先。
+        关闭认证时无需 token。
+      tags: [Metadata]
+      security:
+        - bearerAuth: []
+        - queryTokenAuth: []
+        - {}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 作品数字 ID，后端校验为整数，并补零后截取末六位用于查找图片文件。
+          schema:
+            type: integer
+          example: 123456
+        - name: type
+          in: query
+          description: 图片类型。后端未校验枚举，以下列出约定使用的类型。
+          schema:
+            type: string
+            enum: [main, sam, 240x240, 360x360]
+            default: main
+          example: 240x240
+      responses:
+        '200':
+          description: 作品图片；对应文件不存在或读取失败时返回默认占位图。
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: 作品 ID 未通过整数校验。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+              example:
+                errors:
+                  - value: RJ123456
+                    msg: Invalid value
+                    param: id
+                    location: params
+        '401':
+          $ref: '#/components/responses/ReviewUnauthorized'
+        '500':
+          description: 默认占位图也无法读取等服务器错误。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/review:
     get:
       operationId: listReviews
@@ -330,6 +390,11 @@ components:
           example:
             error: No authorization token was found
   securitySchemes:
+    queryTokenAuth:
+      type: apiKey
+      in: query
+      name: token
+      description: JWT，可用于图片 URL 的认证；服务器关闭认证时无需提供。
     bearerAuth:
       type: http
       scheme: bearer
@@ -374,6 +439,7 @@ components:
       type: object
       description: |
         作品元数据及当前用户的评价。
+        不包含图片内容或缩略图 URL；使用 id 请求 /api/cover/{id}?type=240x240 获取缩略图。
       additionalProperties: true
       properties:
         id:
