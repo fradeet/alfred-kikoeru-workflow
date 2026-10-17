@@ -31,7 +31,8 @@ kikoeru_get_login() {
             expires_at=$(jq -r '.expires_at' "$cache_file") || return 1
 
             # Use cache token
-            if ((now < expires_at)); then
+            if jq -en --argjson now "$now" --argjson expires_at "$expires_at" \
+                '$now < $expires_at' >/dev/null; then
                 printf '%s\n' "$token"
                 return 0
             fi
