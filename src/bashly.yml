@@ -1,0 +1,58 @@
+name: kikoeru_cli
+help: An ASMR platform
+version: 0.2.0
+
+environment_variables:
+  - name: KIKOERU_CLI_API_URL
+    required: true
+    help: The kikoeru api endpoint, like https://api.example.com/api .
+  - name: KIKOERU_CLI_CACHE_DIR
+    required: true
+    help: Path to the cache directory
+  - name: KIKOERU_CLI_FRONTEND_URL
+    required: true
+    help: Path to the frontend URL
+  - name: KIKOERU_CLI_PASSWORD
+    required: true
+    help: Password to use for logging in
+  - name: KIKOERU_CLI_USERNAME
+    required: true
+    help: Username to use for logging in
+
+flags:
+  - long: --verbose
+    short: -v
+    help: Increase output verbosity (up to -v)
+    repeatable: true
+
+dependencies:
+  - curl
+  - jq
+  - date
+
+commands:
+  - name: review
+    help: Reviewed works on Kikoeru platform
+
+    flags:
+      - long: --filter
+        arg: name
+        allowed: [marked, listening, listened, replay, postponed]
+        help: Filter by listening status
+      - long: --order
+        arg: name
+        help: Order by field
+      - long: --output-format
+        arg: name
+        allowed: [alfred]
+        help: Output format
+      - long: --page
+        arg: number
+        help: Page number
+      - long: --sort
+        arg: name
+        allowed: [asc, desc]
+        help: Sort order
+
+    examples:
+      - kikoeru review

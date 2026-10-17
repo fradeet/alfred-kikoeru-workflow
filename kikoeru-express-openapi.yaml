@@ -1,0 +1,554 @@
+openapi: 3.1.0
+info:
+  title: Kikoeru API
+  version: 1.0.0
+paths:
+  /api/review:
+    get:
+      operationId: listReviews
+      summary: 获取当前用户有评价或标记的作品
+      tags: [Review]
+      security:
+        - bearerAuth: []
+        - {}
+      parameters:
+        - name: page
+          in: query
+          description: 页码。后端仅校验整数，0 会按默认页码 1 处理。
+          schema:
+            type: integer
+            default: 1
+        - name: order
+          in: query
+          description: 排序字段，如 id、release、userRating、dl_count、review_count、price、rate_average_2dp、nsfw。
+          schema:
+            type: string
+            default: release
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [desc, asc]
+            default: desc
+        - name: filter
+          in: query
+          description: 按收听状态筛选。不传时返回全部评价记录。
+          schema:
+            $ref: '#/components/schemas/ReviewProgress'
+        - name: seed
+          in: query
+          description: 后端校验为整数，但当前查询逻辑未使用此参数。
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 作品及评价信息，按服务器配置的 pageSize 分页，未配置时每页 12 条。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListReviewsResponse'
+              example:
+                works: []
+                pagination:
+                  currentPage: 1
+                  pageSize: 12
+                  totalCount: 0
+        '400':
+          $ref: '#/components/responses/ReviewValidationError'
+        '401':
+          $ref: '#/components/responses/ReviewUnauthorized'
+        '500':
+          description: 查询失败。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: 查询过程中出错
+    put:
+      operationId: upsertReview
+      summary: 添加或更新评分、评语、收听进度
+      description: |
+        默认仅更新评分。仅更新进度时使用 ?starOnly=false&progressOnly=true；
+        同时更新评分、评语和进度时使用 ?starOnly=false。
+        后端实际从 Query 读取控制参数，且仅识别字面值 false 和 true。
+        请求体中的同名字段虽然会被校验，但不控制更新方式。
+        starOnly 分支优先：如果两者都为 true，实际仅更新评分，响应仍为“更新进度成功”。
+        全量更新时，省略 review_text 或 progress 会将其设为空字符串。
+        rating 虽为可选字段，但评分更新分支省略该字段可能引发数据库错误。
+      tags: [Review]
+      security:
+        - bearerAuth: []
+        - {}
+      parameters:
+        - name: starOnly
+          in: query
+          description: 是否仅更新评分。只有传 false 才会关闭此模式。
+          schema:
+            type: boolean
+            default: true
+        - name: progressOnly
+          in: query
+          description: 是否仅更新进度。需同时设置 starOnly=false。
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertReviewRequest'
+            examples:
+              rating:
+                summary: 默认仅更新评分
+                value:
+                  work_id: 123456
+                  rating: 5
+              progress:
+                summary: 配合 starOnly=false&progressOnly=true 更新进度
+                value:
+                  work_id: 123456
+                  progress: listened
+              full:
+                summary: 配合 starOnly=false 更新全部字段
+                value:
+                  work_id: 123456
+                  rating: 5
+                  review_text: 很喜欢这部作品
+                  progress: listened
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpsertReviewRequest'
+      responses:
+        '200':
+          description: 更新成功。响应消息取决于 Query 中 progressOnly 是否为 true。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              examples:
+                review:
+                  value:
+                    message: 评价成功
+                progress:
+                  value:
+                    message: 更新进度成功
+        '400':
+          $ref: '#/components/responses/ReviewValidationError'
+        '401':
+          $ref: '#/components/responses/ReviewUnauthorized'
+        '500':
+          description: 更新失败。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: 评价失败，服务器错误
+    delete:
+      operationId: deleteReview
+      summary: 删除当前用户对指定作品的评分、评语和进度
+      tags: [Review]
+      security:
+        - bearerAuth: []
+        - {}
+      parameters:
+        - name: work_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          example: 123456
+      responses:
+        '200':
+          description: 删除成功，即使记录不存在也返回此响应。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: 删除标记成功
+        '400':
+          $ref: '#/components/responses/ReviewValidationError'
+        '401':
+          $ref: '#/components/responses/ReviewUnauthorized'
+        '500':
+          description: 使用全局错误处理，生产环境通常返回服务器错误，开发环境可能返回具体错误信息。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: 服务器错误
+  /api/auth/me:
+    get:
+      operationId: getCurrentUser
+      summary: 获取当前用户信息
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+        - {}
+      responses:
+        '200':
+          description: 当前用户信息及服务器是否启用认证。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUserResponse'
+              examples:
+                authenticated:
+                  summary: 已启用认证
+                  value:
+                    user:
+                      name: example-user
+                      group: user
+                    auth: true
+                authenticationDisabled:
+                  summary: 已关闭认证
+                  value:
+                    user:
+                      name: admin
+                      group: administrator
+                    auth: false
+        '401':
+          description: 启用认证时，token 缺失、无效或已过期。
+          headers:
+            WWW-Authenticate:
+              schema:
+                type: string
+                const: 'Bearer realm="Authorization Required"'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missingToken:
+                  value:
+                    error: No authorization token was found
+                invalidToken:
+                  value:
+                    error: invalid token
+                expiredToken:
+                  value:
+                    error: jwt expired
+    post:
+      operationId: login
+      summary: 用户登录
+      description: |
+        使用用户名和密码获取 JWT。此接口无需 Bearer token。
+        后端从请求体读取 name 和 password，并校验两者长度至少为 5。
+      tags:
+        - Auth
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              name: admin
+              password: your-password
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: 登录成功，仅返回 JWT。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              example:
+                token: '<JWT>'
+        '401':
+          description: 用户名或密码错误。
+          headers:
+            WWW-Authenticate:
+              description: Bearer 认证提示。
+              schema:
+                type: string
+                enum:
+                  - 'Bearer realm="Authorization Required"'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: 用户名或密码错误.
+        '422':
+          description: 参数缺失或长度不足，errors 可包含多个校验错误。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+              example:
+                errors:
+                  - value: abc
+                    msg: 用户名长度至少为 5
+                    param: name
+                    location: body
+                  - value: '123'
+                    msg: 密码长度至少为 5
+                    param: password
+                    location: body
+        '500':
+          description: 数据库查询或 JWT 生成等登录处理发生异常。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: 服务器错误
+components:
+  responses:
+    ReviewValidationError:
+      description: 参数校验失败。review 接口使用 HTTP 400。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+          example:
+            errors:
+              - value: abc
+                msg: Invalid value
+                param: work_id
+                location: query
+    ReviewUnauthorized:
+      description: 启用认证时，token 缺失、无效或已过期。
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+            const: 'Bearer realm="Authorization Required"'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: No authorization token was found
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ReviewProgress:
+      type: string
+      enum: [marked, listening, listened, replay, postponed]
+    UpsertReviewRequest:
+      type: object
+      required: [work_id]
+      properties:
+        work_id:
+          type: integer
+        rating:
+          type: [integer, 'null']
+          description: 用户评分，后端仅校验整数，未限制为 1～5。
+        review_text:
+          description: 评语，后端未做类型校验。建议传字符串。
+          examples: [很喜欢这部作品]
+        progress:
+          anyOf:
+            - $ref: '#/components/schemas/ReviewProgress'
+            - type: 'null'
+        starOnly:
+          type: [boolean, 'null']
+          description: 请求体中仅校验此字段，不控制更新方式。请使用 Query 参数。
+        progressOnly:
+          type: [boolean, 'null']
+          description: 请求体中仅校验此字段，不控制更新方式。请使用 Query 参数。
+    ListReviewsResponse:
+      type: object
+      required: [works, pagination]
+      properties:
+        works:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewWork'
+        pagination:
+          $ref: '#/components/schemas/ReviewPagination'
+    ReviewWork:
+      type: object
+      description: |
+        作品元数据及当前用户的评价。
+      additionalProperties: true
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        circle_id:
+          type: integer
+          description: 社团 ID。
+        name:
+          type: string
+          description: 社团名称，与 circle.name 相同。
+        circle:
+          type: object
+          description: 社团信息。
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        release:
+          type: [string, 'null']
+          description: 发售日期，通常为 YYYY-MM-DD。
+        dl_count:
+          type: [integer, 'null']
+          description: 售出数。
+        price:
+          type: [integer, 'null']
+          description: 价格。
+        review_count:
+          type: [integer, 'null']
+          description: 作品评论数量，与当前用户的 review_text 不同。
+        rate_count:
+          type: [integer, 'null']
+          description: 作品评分数量。
+        rate_average_2dp:
+          type: [number, 'null']
+          description: 作品平均评分，与当前用户的 userRating 不同。
+        rate_count_detail:
+          description: 评分分布明细。后端直接解析数据库中的 JSON，可为 null，未约束内部结构。推测直接从 DLsite 抓取。
+        rank:
+          description: 历史销售排名。后端直接解析数据库中的 JSON，未约束内部结构；无数据时为 null。推测直接从 DLsite 抓取。
+        vas:
+          type: array
+          description: 声优列表。
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: 根据声优名称生成的 UUID。
+              name:
+                type: string
+        tags:
+          type: array
+          description: 标签列表。无标签时，当前后端的 LEFT JOIN 聚合可能返回 id 和 name 均为 null 的对象。
+          items:
+            type: object
+            properties:
+              id:
+                type: [integer, 'null']
+              name:
+                type: [string, 'null']
+        userRating:
+          type: [integer, 'null']
+        review_text:
+          type: [string, 'null']
+        progress:
+          type: [string, 'null']
+          description: 收听状态，也可能为 null 或空字符串。
+        updated_at:
+          type: [string, 'null']
+          description: 更新时间，路由将非空值格式化为日期。
+        user_name:
+          type: string
+        nsfw:
+          type: boolean
+    ReviewPagination:
+      type: object
+      required: [currentPage, pageSize, totalCount]
+      properties:
+        currentPage:
+          type: integer
+        pageSize:
+          type: integer
+        totalCount:
+          type: integer
+    MessageResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+    CurrentUserResponse:
+      type: object
+      required:
+        - user
+        - auth
+      properties:
+        user:
+          $ref: '#/components/schemas/UserIdentity'
+        auth:
+          type: boolean
+          description: 服务器是否启用用户认证。
+    UserIdentity:
+      type: object
+      required:
+        - name
+        - group
+      properties:
+        name:
+          type: string
+          description: 用户名。
+        group:
+          type: string
+          description: 用户所属组，如 user 或 administrator。
+    LoginRequest:
+      type: object
+      required:
+        - name
+        - password
+      properties:
+        name:
+          type: string
+          minLength: 5
+          description: 用户名。字段名为 name。
+          example: admin
+        password:
+          type: string
+          format: password
+          minLength: 5
+          description: 密码
+          example: your-password
+    LoginResponse:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          description: JWT，包含 name、group、iss、sub、aud、iat、exp 等声明。后续请求使用 Authorization Bearer 认证。
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+    ValidationErrorResponse:
+      type: object
+      required:
+        - errors
+      properties:
+        errors:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ValidationError'
+    ValidationError:
+      type: object
+      required:
+        - msg
+        - param
+        - location
+      properties:
+        value:
+          description: 未通过校验的原始值；参数缺失时此字段可能省略。
+        msg:
+          type: string
+          example: 用户名长度至少为 5
+        param:
+          type: string
+          description: 未通过校验的参数名。
+          example: name
+        location:
+          type: string
+          description: 参数来源。正常从请求体提交时为 body。
+          example: body
