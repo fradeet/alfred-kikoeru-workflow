@@ -21,6 +21,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>CA986789-C077-404D-93DB-BA2F84FA51DE</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 	</dict>
 	<key>createdby</key>
 	<string>fradeet</string>
@@ -69,7 +82,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>{var:MARK_LIST_COMMAND}</string>
+				<string>{var:KW_MARKED_LIST_COMMAND}</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -83,7 +96,7 @@
 				<key>script</key>
 				<string>export KIKOERU_CACHE_DIR="$alfred_workflow_cache"
 
-./kikoeru_cli review --output-format alfred</string>
+./kikoeru_cli review --output-format alfred --filter marked --order updated_at --sort desc</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -106,6 +119,59 @@
 			<key>version</key>
 			<integer>3</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<true/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>{var:KW_LISTENING_LIST_COMMAND}</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Loading...</string>
+				<key>script</key>
+				<string>export KIKOERU_CACHE_DIR="$alfred_workflow_cache"
+
+./kikoeru_cli review --output-format alfred --filter listening --order updated_at --sort desc</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>skipuniversalaction</key>
+				<true/>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Kikoeru Marked List</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>CA986789-C077-404D-93DB-BA2F84FA51DE</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string># README</string>
@@ -113,6 +179,8 @@
 	<dict>
 		<key>3422CA35-2A0F-4FDA-98F0-65A5B954ACBD</key>
 		<dict>
+			<key>note</key>
+			<string>Marked</string>
 			<key>xpos</key>
 			<real>35</real>
 			<key>ypos</key>
@@ -125,51 +193,18 @@
 			<key>ypos</key>
 			<real>20</real>
 		</dict>
+		<key>CA986789-C077-404D-93DB-BA2F84FA51DE</key>
+		<dict>
+			<key>note</key>
+			<string>Listening</string>
+			<key>xpos</key>
+			<real>35</real>
+			<key>ypos</key>
+			<real>170</real>
+		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
 	<array>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>default</key>
-				<string>kkh</string>
-				<key>placeholder</key>
-				<string>kkh</string>
-				<key>required</key>
-				<false/>
-				<key>trim</key>
-				<true/>
-			</dict>
-			<key>description</key>
-			<string></string>
-			<key>label</key>
-			<string>Homepage command</string>
-			<key>type</key>
-			<string>textfield</string>
-			<key>variable</key>
-			<string>HOMEPAGE_COMMAND</string>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>default</key>
-				<string>kkf1</string>
-				<key>placeholder</key>
-				<string>kkf1</string>
-				<key>required</key>
-				<false/>
-				<key>trim</key>
-				<true/>
-			</dict>
-			<key>description</key>
-			<string></string>
-			<key>label</key>
-			<string>Favourite (Marked) Command</string>
-			<key>type</key>
-			<string>textfield</string>
-			<key>variable</key>
-			<string>MARK_LIST_COMMAND</string>
-		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
@@ -183,7 +218,7 @@
 				<true/>
 			</dict>
 			<key>description</key>
-			<string>Your Kikoeru Server endpoint, without api version, like...</string>
+			<string></string>
 			<key>label</key>
 			<string>API Endpoint URL</string>
 			<key>type</key>
@@ -253,6 +288,48 @@
 			<string>textfield</string>
 			<key>variable</key>
 			<string>KIKOERU_PASSWORD</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>kkf1</string>
+				<key>placeholder</key>
+				<string>kkf1</string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Favourite (Marked) Command</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>KW_MARKED_LIST_COMMAND</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>kkf2</string>
+				<key>placeholder</key>
+				<string>kkf2</string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Favourite (Listening) Command</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>KW_LISTENING_LIST_COMMAND</string>
 		</dict>
 	</array>
 	<key>version</key>
