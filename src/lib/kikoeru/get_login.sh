@@ -11,8 +11,8 @@ kikoeru_get_login() {
     local now
     local token=""
 
-    if [[ -z "$username" || -z "$password" || -z "$cache_dir" ]]; then
-        printf 'Error: username, password and cache_dir are required.\n' >&2
+    if [[ -z "$username" || -z "$password" ]]; then
+        printf 'Error: username and password are required.\n' >&2
         return 1
     fi
 
