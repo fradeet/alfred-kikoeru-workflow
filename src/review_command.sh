@@ -37,8 +37,12 @@ if [[ "$output_format" == "alfred" ]]; then
         exit 1
     fi
 
-    items=$(jq -c \
+    alfred_script_filter_result=$(jq -c \
         --arg frontend_url "$KIKOERU_FRONTEND_URL" '{
+            skipknowledge: true,
+            cache: {
+                seconds: 60
+            },
             items: [
                 .works.[] | {
                     uid: ("work-" + (.id | tostring)),
@@ -50,7 +54,7 @@ if [[ "$output_format" == "alfred" ]]; then
             ]
     }' <<<"$body")
 
-    echo "$items"
+    echo "$alfred_script_filter_result"
 
 else
     echo "$body"
