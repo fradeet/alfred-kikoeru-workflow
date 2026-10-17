@@ -44,17 +44,14 @@ commands:
         help: Order by field
       - long: --output-format
         arg: name
-        allowed:
-          - alfred
+        allowed: [alfred]
         help: Output format
       - long: --page
         arg: number
         help: Page number
       - long: --sort
         arg: name
-        allowed:
-          - asc
-          - desc
+        allowed: [asc, desc]
         help: Sort order
 
     examples:
