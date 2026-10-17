@@ -9,7 +9,18 @@
 	<key>connections</key>
 	<dict>
 		<key>3422CA35-2A0F-4FDA-98F0-65A5B954ACBD</key>
-		<array/>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 	</dict>
 	<key>createdby</key>
 	<string>fradeet</string>
@@ -21,6 +32,27 @@
 	<string>Kikoeru</string>
 	<key>objects</key>
 	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>{var:KIKOERU_FRONTEND_URL}/work/{query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
@@ -82,9 +114,16 @@
 		<key>3422CA35-2A0F-4FDA-98F0-65A5B954ACBD</key>
 		<dict>
 			<key>xpos</key>
-			<real>65</real>
+			<real>35</real>
 			<key>ypos</key>
-			<real>50</real>
+			<real>20</real>
+		</dict>
+		<key>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</key>
+		<dict>
+			<key>xpos</key>
+			<real>255</real>
+			<key>ypos</key>
+			<real>20</real>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
