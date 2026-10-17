@@ -10,6 +10,7 @@ kikoeru_get_login() {
     local http_code
     local now
     local token=""
+    local payload response body error
 
     if [[ -z "$username" || -z "$password" ]]; then
         printf 'Error: username and password are required.\n' >&2
@@ -55,10 +56,10 @@ kikoeru_get_login() {
         :
     else
         echo 'Error: Login request failed, unable to connect to API.' >&2
-        exit 1
+        return 1
     fi
 
-    log_verbose "Kikoeru login response: ${response}"
+    log_verbose "Kikoeru login HTTP status: ${response##*$'\n'}"
 
     http_code="${response##*$'\n'}"
     body="${response%$'\n'*}"
@@ -86,11 +87,11 @@ kikoeru_get_login() {
             printf '%s\n' "$token"
         else
             echo "Error: Missing token in response." >&2
-            exit 1
+            return 1
         fi
     else
         error=$(jq -r '.error // "Unknown error"' <<<"$body" 2>/dev/null || true)
         printf 'Login failed（HTTP %s）：%s\n' "$http_code" "${error:-Unknown error}" >&2
-        exit 1
+        return 1
     fi
 }

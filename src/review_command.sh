@@ -14,10 +14,12 @@ if [[ -n "${args[--page]}" ]]; then
     args+=(--data-urlencode "page=${args[--page]}")
 fi
 
+token=$(kikoeru_get_login) || exit 1
+
 response=$(
     curl -sS -G \
         -H 'accept: application/json' \
-        -H "authorization: Bearer $(kikoeru_get_login)" \
+        -H "authorization: Bearer $token" \
         --write-out $'\n%{http_code}' \
         "${args[@]}" \
         "$KIKOERU_API_URL/review"
