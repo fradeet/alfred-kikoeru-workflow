@@ -16,7 +16,7 @@ kikoeru_get_login() {
         return 1
     fi
 
-    now=$(date +%s)
+    now=$(date +%s) || return 1
     cache_file="${cache_dir}/auth.json"
 
     # Read cache
@@ -27,8 +27,8 @@ kikoeru_get_login() {
                 and (.expires_at | type == "number")
             ' "$cache_file" >/dev/null 2>&1; then
 
-            token=$(jq -r '.token' "$cache_file")
-            expires_at=$(jq -r '.expires_at' "$cache_file")
+            token=$(jq -r '.token' "$cache_file") || return 1
+            expires_at=$(jq -r '.expires_at' "$cache_file") || return 1
 
             # Use cache token
             if ((now < expires_at)); then
@@ -42,7 +42,7 @@ kikoeru_get_login() {
     payload=$(jq -n \
         --arg name "$username" \
         --arg password "$password" \
-        '{name: $name, password: $password}')
+        '{name: $name, password: $password}') || return 1
 
     # POST request
     if response=$(curl -sS \
@@ -74,7 +74,7 @@ kikoeru_get_login() {
             if ! jq -n \
                 --arg username "$username" \
                 --arg token "$token" \
-                --argjson expires_at $(($(date +%s) + 86400)) \
+                --argjson expires_at "$((now + 86400))" \
                 '{username: $username, token: $token, expires_at: $expires_at}' \
                 >"$cache_file"; then
                 echo 'Error: failed to save auth cache.' >&2
