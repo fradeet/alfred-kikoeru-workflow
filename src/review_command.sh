@@ -2,6 +2,10 @@ output_format="${args['--output-format']:-}"
 
 request_args=()
 
+if [[ -n "${args[--filter]:-}" ]]; then
+    request_args+=(--data-urlencode "filter=${args[--filter]}")
+fi
+
 if [[ -n "${args[--order]:-}" ]]; then
     request_args+=(--data-urlencode "order=${args[--order]}")
 fi

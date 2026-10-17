@@ -35,6 +35,10 @@ commands:
     help: Reviewed works on Kikoeru platform
 
     flags:
+      - long: --filter
+        arg: name
+        allowed: [marked, listening, listened, replay, postponed]
+        help: Filter by listening status
       - long: --order
         arg: name
         help: Order by field
