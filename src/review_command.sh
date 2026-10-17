@@ -46,7 +46,7 @@ if [[ "$output_format" == "alfred" ]]; then
                     quicklookurl: ($frontend_url + "/work/" + (.id | tostring))
                 }
             ]
-    }' <<< "$body")
+    }' <<<"$body")
 
     echo "$items"
 
