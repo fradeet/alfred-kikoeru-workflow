@@ -1,17 +1,17 @@
-output_format="${args['--output-format']}"
+output_format="${args['--output-format']:-}"
 
-args=()
+request_args=()
 
-if [[ -n "${args[--order]}" ]]; then
-    args+=(--data-urlencode "order=${args[--order]}")
+if [[ -n "${args[--order]:-}" ]]; then
+    request_args+=(--data-urlencode "order=${args[--order]}")
 fi
 
-if [[ -n "${args[--sort]}" ]]; then
-    args+=(--data-urlencode "sort=${args[--sort]}")
+if [[ -n "${args[--sort]:-}" ]]; then
+    request_args+=(--data-urlencode "sort=${args[--sort]}")
 fi
 
-if [[ -n "${args[--page]}" ]]; then
-    args+=(--data-urlencode "page=${args[--page]}")
+if [[ -n "${args[--page]:-}" ]]; then
+    request_args+=(--data-urlencode "page=${args[--page]}")
 fi
 
 token=$(kikoeru_get_login) || exit 1
@@ -21,7 +21,7 @@ response=$(
         -H 'accept: application/json' \
         -H "authorization: Bearer $token" \
         --write-out $'\n%{http_code}' \
-        "${args[@]}" \
+        "${request_args[@]}" \
         "$KIKOERU_API_URL/review"
 ) || {
     echo 'cURL Error.' >&2
