@@ -67,6 +67,13 @@ paths:
     get:
       operationId: listReviews
       summary: 获取当前用户有评价或标记的作品
+      description: |
+        使用 order 指定排序字段，sort 指定方向，filter 按收听状态筛选。
+        示例：/api/review?filter=listened&order=userRating&sort=desc，
+        或 /api/review?order=updated_at&sort=desc（最近更新评价或标记的作品优先）。
+        不支持通过 price、userRating、nsfw、progress 等同名 Query 参数直接筛选；
+        例如 price=100、userRating=5、nsfw=false 不会产生筛选效果。
+        更新评价使用 PUT /api/review，删除评价使用 DELETE /api/review?work_id=作品ID。
       tags: [Review]
       security:
         - bearerAuth: []
@@ -80,19 +87,42 @@ paths:
             default: 1
         - name: order
           in: query
-          description: 排序字段，如 id、release、userRating、dl_count、review_count、price、rate_average_2dp、nsfw。
+          description: |
+            后端未设置字段白名单，直接将此值传入数据库 orderBy；以下列出可用字段，
+            不存在的字段会导致 HTTP 500。默认按 release 降序排列。
+            主排序值相同时，继续按 release DESC、id DESC 排序。
+
+            常用字段：
+            - id：作品 ID；title：作品标题；release：发售日期。
+            - dl_count：销量；price：价格；review_count：评论数量；rate_count：评分人数。
+            - rate_average_2dp：作品平均评分；nsfw：成人内容标记。
+            - userRating：当前用户评分（不能使用 rating）。
+            - updated_at：当前用户评价或标记的更新时间；progress：当前用户收听进度。
+
+            其他可用列：circle_id（社团 ID）、name（社团名称）、review_text（评语）、
+            user_name（用户名）、work_id（评价关联的作品 ID），以及
+            rate_count_detail、rank、circleObj、vaObj、tagObj（按数据库中的 JSON 文本排序，
+            不按 JSON 内部属性排序；circleObj、vaObj、tagObj 并非响应中的 circle、vas、tags）。
+
+            作品字段和 userRating 也可用于 /api/works、/api/search/{keyword}、
+            /api/circles/{id}/works、/api/tags/{id}/works、/api/vas/{id}/works 的 order。
+            这些列表接口未接入评价的 updated_at、progress、review_text、user_name 字段，
+            不应直接复用 review 的全部排序选项。
           schema:
             type: string
             default: release
+            examples: [release, id, title, dl_count, price, review_count, rate_count, rate_average_2dp, nsfw, userRating, updated_at, progress, circle_id, name, review_text, user_name, work_id, rate_count_detail, rank, circleObj, vaObj, tagObj]
+          example: updated_at
         - name: sort
           in: query
+          description: 主排序方向，desc 为降序，asc 为升序；不改变后续 release DESC、id DESC 的排序方向。
           schema:
             type: string
             enum: [desc, asc]
             default: desc
         - name: filter
           in: query
-          description: 按收听状态筛选。不传时返回全部评价记录。
+          description: 按当前用户的收听状态精确筛选，可与 order、sort 组合使用。参数名为 filter，不是 progress。不传时返回全部评价记录。
           schema:
             $ref: '#/components/schemas/ReviewProgress'
         - name: seed
@@ -505,6 +535,7 @@ components:
                 type: [string, 'null']
         userRating:
           type: [integer, 'null']
+          description: 当前用户评分，可用于 order；提交或更新评分时，请求体字段名为 rating。
         review_text:
           type: [string, 'null']
         progress:
