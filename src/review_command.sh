@@ -35,14 +35,17 @@ if [[ "$output_format" == "alfred" ]]; then
         exit 1
     fi
 
-    items=$(jq -c '{
-        items: [
-            .works.[] | {
-                uid: ("work-" + (.id | tostring)),
-                title: .title,
-                arg: .id
-            }
-        ]
+    items=$(jq -c \
+        --arg frontend_url "$KIKOERU_FRONTEND_URL" '{
+            items: [
+                .works.[] | {
+                    uid: ("work-" + (.id | tostring)),
+                    title: .title,
+                    subtitle: [.tags.[].name] | join(", "),
+                    arg: .id,
+                    quicklookurl: ($frontend_url + "/work/" + (.id | tostring))
+                }
+            ]
     }' <<< "$body")
 
     echo "$items"
