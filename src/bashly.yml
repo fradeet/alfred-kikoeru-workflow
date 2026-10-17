@@ -3,19 +3,19 @@ help: An ASMR platform
 version: 0.2.0
 
 environment_variables:
-  - name: KIKOERU_API_URL
+  - name: KIKOERU_CLI_API_URL
     required: true
     help: The kikoeru api endpoint, like https://api.example.com/api .
-  - name: KIKOERU_CACHE_DIR
+  - name: KIKOERU_CLI_CACHE_DIR
     required: true
     help: Path to the cache directory
-  - name: KIKOERU_FRONTEND_URL
+  - name: KIKOERU_CLI_FRONTEND_URL
     required: true
     help: Path to the frontend URL
-  - name: KIKOERU_PASSWORD
+  - name: KIKOERU_CLI_PASSWORD
     required: true
     help: Password to use for logging in
-  - name: KIKOERU_USERNAME
+  - name: KIKOERU_CLI_USERNAME
     required: true
     help: Username to use for logging in
 

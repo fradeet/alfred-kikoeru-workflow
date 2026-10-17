@@ -57,7 +57,7 @@
 				<key>spaces</key>
 				<string></string>
 				<key>url</key>
-				<string>{var:KIKOERU_FRONTEND_URL}/work/{query}</string>
+				<string>{var:KIKOERU_CLI_FRONTEND_URL}/work/{query}</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.openurl</string>
@@ -94,7 +94,7 @@
 				<key>runningsubtext</key>
 				<string>Loading...</string>
 				<key>script</key>
-				<string>export KIKOERU_CACHE_DIR="$alfred_workflow_cache"
+				<string>export KIKOERU_CLI_CACHE_DIR="$alfred_workflow_cache"
 
 ./kikoeru_cli review --output-format alfred --filter marked --order updated_at --sort desc</string>
 				<key>scriptargtype</key>
@@ -147,7 +147,7 @@
 				<key>runningsubtext</key>
 				<string>Loading...</string>
 				<key>script</key>
-				<string>export KIKOERU_CACHE_DIR="$alfred_workflow_cache"
+				<string>export KIKOERU_CLI_CACHE_DIR="$alfred_workflow_cache"
 
 ./kikoeru_cli review --output-format alfred --filter listening --order updated_at --sort desc</string>
 				<key>scriptargtype</key>
@@ -211,7 +211,7 @@
 				<key>default</key>
 				<string></string>
 				<key>placeholder</key>
-				<string>https://kiko....example.com/api</string>
+				<string>https://kikoeru.example/api</string>
 				<key>required</key>
 				<true/>
 				<key>trim</key>
@@ -224,7 +224,7 @@
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>KIKOERU_API_URL</string>
+			<string>KIKOERU_CLI_API_URL</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -232,20 +232,20 @@
 				<key>default</key>
 				<string></string>
 				<key>placeholder</key>
-				<string></string>
+				<string>https://kikoeru.example</string>
 				<key>required</key>
 				<true/>
 				<key>trim</key>
 				<true/>
 			</dict>
 			<key>description</key>
-			<string>Your Kikoeru App frontend.</string>
+			<string></string>
 			<key>label</key>
 			<string>Frontend URL</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>KIKOERU_FRONTEND_URL</string>
+			<string>KIKOERU_CLI_FRONTEND_URL</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -266,7 +266,7 @@
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>KIKOERU_USERNAME</string>
+			<string>KIKOERU_CLI_USERNAME</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -287,7 +287,7 @@
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>KIKOERU_PASSWORD</string>
+			<string>KIKOERU_CLI_PASSWORD</string>
 		</dict>
 		<dict>
 			<key>config</key>

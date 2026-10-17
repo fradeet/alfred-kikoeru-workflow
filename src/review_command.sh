@@ -26,7 +26,7 @@ response=$(
         -H "authorization: Bearer $token" \
         --write-out $'\n%{http_code}' \
         "${request_args[@]}" \
-        "$KIKOERU_API_URL/review"
+        "$KIKOERU_CLI_API_URL/review"
 ) || {
     echo 'cURL Error.' >&2
     exit 1
@@ -42,7 +42,7 @@ if [[ "$output_format" == "alfred" ]]; then
     fi
 
     alfred_script_filter_result=$(jq -c \
-        --arg frontend_url "$KIKOERU_FRONTEND_URL" '{
+        --arg frontend_url "$KIKOERU_CLI_FRONTEND_URL" '{
             skipknowledge: true,
             cache: {
                 seconds: 60
