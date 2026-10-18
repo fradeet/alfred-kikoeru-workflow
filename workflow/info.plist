@@ -245,7 +245,7 @@
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>KIKOERU_CLI_FRONTEND_URL</string>
+			<string>KIKOERU_CLI_FRONTEND_BASE_URL</string>
 		</dict>
 		<dict>
 			<key>config</key>
