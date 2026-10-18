@@ -43,7 +43,7 @@ if [[ "$output_format" == "alfred" ]]; then
     fi
 
     alfred_script_filter_result=$(jq -c \
-        --arg frontend_url "$KIKOERU_CLI_FRONTEND_URL" '{
+        --arg frontend_url "$KIKOERU_CLI_FRONTEND_BASE_URL" '{
             skipknowledge: true,
             cache: {
                 seconds: 60

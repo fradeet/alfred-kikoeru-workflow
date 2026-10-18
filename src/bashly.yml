@@ -1,6 +1,6 @@
 name: kikoeru_cli
 help: An ASMR platform
-version: 0.2.10
+version: 0.3.1
 
 environment_variables:
   - name: KIKOERU_CLI_API_URL
