@@ -7,7 +7,7 @@ environment_variables:
     required: true
     help: The kikoeru api endpoint, like https://api.example.com/api .
   - name: KIKOERU_CLI_CACHE_DIR
-    required: true
+    default: /tmp/kikoeru_cli
     help: Path to the cache directory
   - name: KIKOERU_CLI_FRONTEND_URL
     required: true
