@@ -41,6 +41,17 @@ commands:
         help: Filter by listening status
       - long: --order
         arg: name
+        allowed:
+          [
+            release,
+            id,
+            dl_count,
+            price,
+            review_count,
+            rate_average_2dp,
+            nsfw,
+            updated_at,
+          ]
         help: Order by field
       - long: --output-format
         arg: name

@@ -111,7 +111,7 @@ paths:
           schema:
             type: string
             default: release
-            examples: [release, id, title, dl_count, price, review_count, rate_count, rate_average_2dp, nsfw, userRating, updated_at, progress, circle_id, name, review_text, user_name, work_id, rate_count_detail, rank, circleObj, vaObj, tagObj]
+            examples: [release, id, dl_count, price, review_count, rate_average_2dp, nsfw, updated_at]
           example: updated_at
         - name: sort
           in: query
