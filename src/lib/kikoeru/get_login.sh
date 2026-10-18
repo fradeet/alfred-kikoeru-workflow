@@ -48,6 +48,7 @@ kikoeru_get_login() {
 
     # POST request
     if response=$(curl -sS \
+        -A "fradeet/kikoeru-cli/$version" \
         --request POST \
         --header 'Content-Type: application/json' \
         --data "$payload" \
