@@ -22,6 +22,7 @@ token=$(kikoeru_get_login) || exit 1
 
 response=$(
     curl -sS -G \
+        -A "fradeet/kikoeru-cli/$version" \
         -H 'accept: application/json' \
         -H "authorization: Bearer $token" \
         --write-out $'\n%{http_code}' \
