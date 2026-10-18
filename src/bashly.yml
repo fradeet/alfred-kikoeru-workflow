@@ -5,7 +5,7 @@ version: 0.2.0
 environment_variables:
   - name: KIKOERU_CLI_API_URL
     required: true
-    help: The kikoeru api endpoint, like https://api.example.com/api .
+    help: The kikoeru api endpoint, like http://127.0.0.1:8888/api .
   - name: KIKOERU_CLI_CACHE_DIR
     default: /tmp/kikoeru_cli
     help: Path to the cache directory
