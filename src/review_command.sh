@@ -42,8 +42,21 @@ if [[ "$output_format" == "alfred" ]]; then
         exit 1
     fi
 
+    # Cache Image
+    image_dir="$KIKOERU_CLI_CACHE_DIR/work_cover_images/sam"
+    mkdir -p "$image_dir" || exit 1
+
+    images_arg=()
+    for work in $(jq -r '.works[] | .id' <<<"$body"); do
+        images_arg+=(-o "$image_dir/$work.jpg" "${KIKOERU_CLI_API_URL%/}/cover/$work?type=sam")
+    done
+
+    curl -sS "${images_arg[@]}" || exit 1
+
     alfred_script_filter_result=$(jq -c \
-        --arg frontend_url "$KIKOERU_CLI_FRONTEND_BASE_URL" '{
+        --arg frontend_url "$KIKOERU_CLI_FRONTEND_BASE_URL" \
+        --arg image_dir "$image_dir" \
+        '{
             skipknowledge: true,
             cache: {
                 seconds: 60
@@ -54,6 +67,9 @@ if [[ "$output_format" == "alfred" ]]; then
                     title: .title,
                     subtitle: [.tags.[].name] | join(", "),
                     arg: .id,
+                    icon: {
+                        path: ($image_dir + "/" + (.id | tostring) + ".jpg")
+                    },
                     quicklookurl: ($frontend_url + "/work/" + (.id | tostring))
                 }
             ]
