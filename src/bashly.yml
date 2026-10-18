@@ -36,7 +36,7 @@ commands:
 
     flags:
       - long: --filter
-        arg: name
+        arg: status
         allowed: [marked, listening, listened, replay, postponed]
         help: Filter by listening status
       - long: --order
@@ -54,7 +54,7 @@ commands:
           ]
         help: Order by field
       - long: --output-format
-        arg: name
+        arg: format
         allowed: [alfred]
         help: Output format
       - long: --page
