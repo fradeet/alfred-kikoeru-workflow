@@ -9,7 +9,7 @@ environment_variables:
   - name: KIKOERU_CLI_CACHE_DIR
     default: /tmp/kikoeru_cli
     help: Path to the cache directory
-  - name: KIKOERU_CLI_FRONTEND_URL
+  - name: KIKOERU_CLI_FRONTEND_BASE_URL
     required: true
     help: Path to the frontend URL
   - name: KIKOERU_CLI_PASSWORD
