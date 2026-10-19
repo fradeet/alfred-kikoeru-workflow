@@ -42,6 +42,8 @@ if [[ "$output_format" == "alfred" ]]; then
         exit 1
     fi
 
+    log_verbose "Checking images cache..."
+
     # Cache Image
     image_dir="$KIKOERU_CLI_CACHE_DIR/work_cover_images/sam"
     mkdir -p "$image_dir" || exit 1
