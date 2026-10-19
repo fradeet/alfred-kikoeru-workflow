@@ -96,7 +96,7 @@
 				<key>script</key>
 				<string>export KIKOERU_CLI_CACHE_DIR="$alfred_workflow_cache"
 
-./kikoeru_cli review --output-format alfred --filter marked --order updated_at --sort desc</string>
+./kikoeru-cli review --output-format alfred --filter marked --order updated_at --sort desc</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -149,7 +149,7 @@
 				<key>script</key>
 				<string>export KIKOERU_CLI_CACHE_DIR="$alfred_workflow_cache"
 
-./kikoeru_cli review --output-format alfred --filter listening --order updated_at --sort desc</string>
+./kikoeru-cli review --output-format alfred --filter listening --order updated_at --sort desc</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>

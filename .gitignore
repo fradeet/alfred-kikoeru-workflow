@@ -1,7 +1,7 @@
 workflow/prefs.plist
 .DS_Store
 /*.alfredworkflow
-*kikoeru_cli
+*kikoeru-cli
 
 # Dev
 src/lib/fake_data/
