@@ -48,10 +48,14 @@ if [[ "$output_format" == "alfred" ]]; then
 
     images_arg=()
     for work in $(jq -r '.works[] | .id' <<<"$body"); do
-        images_arg+=(-o "$image_dir/$work.jpg" "${KIKOERU_CLI_API_URL%/}/cover/$work?type=sam")
+        if [[ ! -f "$image_dir/$work.jpg" ]]; then
+            images_arg+=(-o "$image_dir/$work.jpg" "${KIKOERU_CLI_API_URL%/}/cover/$work?type=sam")
+        fi
     done
 
-    curl -sS "${images_arg[@]}" || exit 1
+    if ((${#images_arg[@]} > 0)); then
+        curl -sS "${images_arg[@]}" || exit 1
+    fi
 
     alfred_script_filter_result=$(jq -c \
         --arg frontend_url "$KIKOERU_CLI_FRONTEND_BASE_URL" \
