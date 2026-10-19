@@ -54,6 +54,7 @@ if [[ "$output_format" == "alfred" ]]; then
     done
 
     if ((${#images_arg[@]} > 0)); then
+        log_verbose "Downloading new ${#images_arg[@]} cover images..."
         curl -sS "${images_arg[@]}" || exit 1
     fi
 
