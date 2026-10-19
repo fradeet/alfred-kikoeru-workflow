@@ -1,9 +1,9 @@
 kikoeru_get_login() {
-    local username="$KIKOERU_CLI_USERNAME"
-    local password="$KIKOERU_CLI_PASSWORD"
+    local username="$KIKOERU_USERNAME"
+    local password="$KIKOERU_PASSWORD"
     local cache_dir="$KIKOERU_CLI_CACHE_DIR"
 
-    local kikoeru_api_url="$KIKOERU_CLI_API_URL"
+    local kikoeru_api_url="$KIKOERU_API_ENDPOINT"
 
     local cache_file
     local expires_at=""
