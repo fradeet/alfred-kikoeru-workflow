@@ -1,4 +1,5 @@
 output_format="${args['--output-format']:-}"
+image_type="${args['--cache-image-type']}"
 
 request_args=()
 
@@ -45,13 +46,13 @@ if [[ "$output_format" == "alfred" ]]; then
     log_verbose "Checking images cache..."
 
     # Cache Image
-    image_dir="$KIKOERU_CLI_CACHE_DIR/work_cover_images/sam"
+    image_dir="$KIKOERU_CLI_CACHE_DIR/work_cover_images/$image_type"
     mkdir -p "$image_dir" || exit 1
 
     images_arg=()
     for work in $(jq -r '.works[] | .id' <<<"$body"); do
         if [[ ! -f "$image_dir/$work.jpg" ]]; then
-            images_arg+=(-o "$image_dir/$work.jpg" "${KIKOERU_API_ENDPOINT%/}/cover/$work?type=sam")
+            images_arg+=(-o "$image_dir/$work.jpg" "${KIKOERU_API_ENDPOINT%/}/cover/$work?type=$image_type")
         fi
     done
 
