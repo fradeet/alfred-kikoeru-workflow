@@ -35,6 +35,12 @@ commands:
     help: Reviewed works on Kikoeru platform
 
     flags:
+      - long: --cache-image-type
+        arg: type
+        allowed: [main, sam, 240x240, 360x360]
+        default: sam
+        needs: [--output-format]
+        help: Cache image type
       - long: --filter
         arg: status
         allowed: [marked, listening, listened, replay, postponed]
