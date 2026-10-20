@@ -1,6 +1,6 @@
 name: kikoeru-cli
 help: An ASMR platform
-version: 0.4.0
+version: 0.5.0
 
 environment_variables:
   - name: KIKOERU_API_ENDPOINT

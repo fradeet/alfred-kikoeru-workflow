@@ -42,16 +42,23 @@ if [[ "$output_format" == "alfred" ]]; then
         exit 1
     fi
 
+    log_verbose "Checking images cache..."
+
     # Cache Image
     image_dir="$KIKOERU_CLI_CACHE_DIR/work_cover_images/sam"
     mkdir -p "$image_dir" || exit 1
 
     images_arg=()
     for work in $(jq -r '.works[] | .id' <<<"$body"); do
-        images_arg+=(-o "$image_dir/$work.jpg" "${KIKOERU_API_ENDPOINT%/}/cover/$work?type=sam")
+        if [[ ! -f "$image_dir/$work.jpg" ]]; then
+            images_arg+=(-o "$image_dir/$work.jpg" "${KIKOERU_API_ENDPOINT%/}/cover/$work?type=sam")
+        fi
     done
 
-    curl -sS "${images_arg[@]}" || exit 1
+    if ((${#images_arg[@]} > 0)); then
+        log_verbose "Downloading new ${#images_arg[@]} cover images..."
+        curl -sS "${images_arg[@]}" || exit 1
+    fi
 
     alfred_script_filter_result=$(jq -c \
         --arg frontend_url "$KIKOERU_FRONTEND_URL" \
