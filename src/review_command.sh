@@ -37,12 +37,8 @@ response=$(
 status_code="${response##*$'\n'}"
 body="${response%$'\n'*}"
 
+if [[ "$status_code" == "200" ]]; then
 if [[ "$output_format" == "alfred" ]]; then
-    if [[ "$status_code" != "200" ]]; then
-        echo "Error: $status_code" >&2
-        exit 1
-    fi
-
     log_verbose "Checking images cache..."
 
     # Cache Image
@@ -85,11 +81,6 @@ if [[ "$output_format" == "alfred" ]]; then
 
     echo "$alfred_script_filter_result"
 elif [[ "$output_format" == "quicker" ]]; then
-    if [[ "$status_code" != "200" ]]; then
-        echo "Error: $status_code" >&2
-        exit 1
-    fi
-
     log_verbose "Checking images cache..."
 
     # Cache Image
@@ -131,4 +122,7 @@ elif [[ "$output_format" == "quicker" ]]; then
     echo "$quicker_result"
 else
     echo "$body"
+    fi
+    echo "[Review] Request Error: HTTP $status_code" >&2
+    exit 1
 fi
