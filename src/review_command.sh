@@ -38,7 +38,6 @@ status_code="${response##*$'\n'}"
 body="${response%$'\n'*}"
 
 if [[ "$status_code" == "200" ]]; then
-if [[ "$output_format" == "alfred" ]]; then
     log_verbose "Checking images cache..."
 
     # Cache Image
@@ -46,17 +45,20 @@ if [[ "$output_format" == "alfred" ]]; then
     mkdir -p "$image_dir" || exit 1
 
     images_arg=()
-    for work in $(jq -r '.works[] | .id' <<<"$body"); do
+    for work in $(jq -br '.works[] | .id' <<<"$body"); do
         if [[ ! -f "$image_dir/$work.jpg" ]]; then
+            verbose_debug "Caching image for work: $work (type: $image_type)"
             images_arg+=(-o "$image_dir/$work.jpg" "${KIKOERU_API_ENDPOINT%/}/cover/$work?type=$image_type")
+        else
+            verbose_debug "Image for work: $work (type: $image_type) is already cached"
         fi
     done
 
     if ((${#images_arg[@]} > 0)); then
-        log_verbose "Downloading new ${#images_arg[@]} cover images..."
+        log_verbose "Downloading new ${#images_arg[@]} cover images..."  # TODO Fix
         curl -sS "${images_arg[@]}" || exit 1
     fi
-
+if [[ "$output_format" == "alfred" ]]; then
     alfred_script_filter_result=$(jq -c \
         --arg frontend_url "$KIKOERU_FRONTEND_URL" \
         --arg image_dir "$image_dir" \
@@ -81,30 +83,7 @@ if [[ "$output_format" == "alfred" ]]; then
 
     echo "$alfred_script_filter_result"
 elif [[ "$output_format" == "quicker" ]]; then
-    log_verbose "Checking images cache..."
-
-    # Cache Image
-    image_dir="$KIKOERU_CLI_CACHE_DIR/work_cover_images/$image_type"
     win_image_dir=$(cygpath -w "$image_dir")
-    mkdir -p "$image_dir" || exit 1
-
-    images_arg=()
-    for work in $(jq -br '.works[] | .id' <<<"$body"); do
-        if [[ ! -f "$image_dir/$work.jpg" ]]; then
-            verbose_debug "Caching image for work: $work (type: $image_type)"
-            images_arg+=(-o "$image_dir/$work.jpg" "${KIKOERU_API_ENDPOINT%/}/cover/$work?type=$image_type")
-        else
-            verbose_debug "Image for work: $work (type: $image_type) is already cached"
-        fi
-    done
-
-
-
-    if ((${#images_arg[@]} > 0)); then
-        log_verbose "Downloading new ${#images_arg[@]} cover images..."  # TODO Fix
-        curl -sS "${images_arg[@]}" || exit 1
-    fi
-
     quicker_result=$(jq -c \
         --arg image_dir "$win_image_dir" \
         '{
