@@ -22,7 +22,7 @@ environment_variables:
 flags:
   - long: --verbose
     short: -v
-    help: Increase output verbosity (up to -v)
+    help: Increase output verbosity (up to -vv)
     repeatable: true
 
 dependencies:
