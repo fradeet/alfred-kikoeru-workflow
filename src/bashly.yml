@@ -61,7 +61,7 @@ commands:
         help: Order by field
       - long: --output-format
         arg: format
-        allowed: [alfred]
+        allowed: [alfred, quicker]
         help: Output format
       - long: --page
         arg: number
