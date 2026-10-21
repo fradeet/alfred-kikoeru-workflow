@@ -40,7 +40,6 @@ body="${response%$'\n'*}"
 if [[ "$status_code" == "200" ]]; then
     log_verbose "Checking images cache..."
 
-    # Cache Image
     image_dir="$KIKOERU_CLI_CACHE_DIR/work_cover_images/$image_type"
     mkdir -p "$image_dir" || exit 1
 
@@ -55,14 +54,14 @@ if [[ "$status_code" == "200" ]]; then
     done
 
     if ((${#images_arg[@]} > 0)); then
-        log_verbose "Downloading new ${#images_arg[@]} cover images..."  # TODO Fix
+        log_verbose "Downloading new ${#images_arg[@]} cover images..." # TODO Fix
         curl -sS "${images_arg[@]}" || exit 1
     fi
-if [[ "$output_format" == "alfred" ]]; then
-    alfred_script_filter_result=$(jq -c \
-        --arg frontend_url "$KIKOERU_FRONTEND_URL" \
-        --arg image_dir "$image_dir" \
-        '{
+    if [[ "$output_format" == "alfred" ]]; then
+        alfred_script_filter_result=$(jq -c \
+            --arg frontend_url "$KIKOERU_FRONTEND_URL" \
+            --arg image_dir "$image_dir" \
+            '{
             skipknowledge: true,
             cache: {
                 seconds: 60
@@ -79,14 +78,14 @@ if [[ "$output_format" == "alfred" ]]; then
                     quicklookurl: ($frontend_url + "/work/" + (.id | tostring))
                 }
             ]
-    }' <<<"$body")
+        }' <<<"$body")
 
-    echo "$alfred_script_filter_result"
-elif [[ "$output_format" == "quicker" ]]; then
-    win_image_dir=$(cygpath -w "$image_dir")
-    quicker_result=$(jq -c \
-        --arg image_dir "$win_image_dir" \
-        '{
+        echo "$alfred_script_filter_result"
+    elif [[ "$output_format" == "quicker" ]]; then
+        win_image_dir=$(cygpath -w "$image_dir")
+        quicker_result=$(jq -c \
+            --arg image_dir "$win_image_dir" \
+            '{
             Items: [
                 .works.[] | {
                     Title: .title,
@@ -96,11 +95,10 @@ elif [[ "$output_format" == "quicker" ]]; then
                     DataType: "custom",
                 }
             ]
-    }' <<<"$body")
-
-    echo "$quicker_result"
-else
-    echo "$body"
+        }' <<<"$body")
+        echo "$quicker_result"
+    else
+        echo "$body"
     fi
     echo "[Review] Request Error: HTTP $status_code" >&2
     exit 1
