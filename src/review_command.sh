@@ -25,7 +25,7 @@ fi
 
 token=$(kikoeru_get_login) || exit 1
 
-log_verbose "GET $KIKOERU_API_ENDPOINT/review"
+verbose_log "GET $KIKOERU_API_ENDPOINT/review"
 response=$(
     curl -sS -G \
         -A "fradeet/kikoeru-cli/$version" \
@@ -42,10 +42,10 @@ status_code="${response##*$'\n'}"
 body="${response%$'\n'*}"
 
 if [[ "$status_code" == "200" ]]; then
-    log_verbose "Checking images cache..."
+    verbose_log "Checking images cache..."
 
     image_dir="$KIKOERU_CLI_CACHE_DIR/work_cover_images/$image_type"
-    log_verbose "Image dir: $image_dir"
+    verbose_log "Image dir: $image_dir"
     mkdir -p "$image_dir" || exit 1
 
     images_arg=()
@@ -58,10 +58,10 @@ if [[ "$status_code" == "200" ]]; then
 
     if ((${#images_arg[@]} > 0)); then
         curl -sS "${images_arg[@]}" || exit 1
-        log_verbose "Downloaded new ${#images_arg[@]}/3 cover images..." # TODO Fix
+        verbose_log "Downloaded new ${#images_arg[@]}/3 cover images..." # TODO Fix
     fi
     if [[ "$output_format" == "alfred" ]]; then
-        log_verbose "Generating Alfred Script Filter result..."
+        verbose_log "Generating Alfred Script Filter result..."
         alfred_script_filter_result=$(jq -c \
             --arg frontend_url "$KIKOERU_FRONTEND_URL" \
             --arg image_dir "$image_dir" \
@@ -86,7 +86,7 @@ if [[ "$status_code" == "200" ]]; then
 
         echo "$alfred_script_filter_result"
     elif [[ "$output_format" == "quicker" ]]; then
-        log_verbose "Generating Quicker result..."
+        verbose_log "Generating Quicker result..."
         win_image_dir=$(cygpath -w "$image_dir")
         quicker_result=$(jq -c \
             --arg image_dir "$win_image_dir" \
