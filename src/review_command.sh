@@ -57,7 +57,10 @@ if [[ "$status_code" == "200" ]]; then
     done
 
     if ((${#images_arg[@]} > 0)); then
-        curl -sS "${images_arg[@]}" || exit 1
+        curl -sS --remove-on-error --parallel-max 3 \
+            -A "fradeet/kikoeru-cli/$version" \
+            -H "authorization: Bearer $token" \
+            "${images_arg[@]}" || exit 1
         verbose_log "Downloaded new ${#images_arg[@]}/3 cover images..." # TODO Fix
     fi
     if [[ "$output_format" == "alfred" ]]; then
@@ -105,6 +108,7 @@ if [[ "$status_code" == "200" ]]; then
     else
         echo "$body"
     fi
+else
     verbose_debug "Response: $body"
     echo "[Review] Request Error: HTTP $status_code" >&2
     exit 1
