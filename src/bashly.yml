@@ -31,8 +31,7 @@ dependencies:
   - date
 
 commands:
-  - name: review
-    help: Reviewed works on Kikoeru platform
+  - name: favourite
 
     flags:
       - long: --cache-image-type
@@ -72,4 +71,4 @@ commands:
         help: Sort order
 
     examples:
-      - kikoeru review
+      - kikoeru-cli favourite
