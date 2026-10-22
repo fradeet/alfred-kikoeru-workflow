@@ -4,23 +4,28 @@ image_type="${args['--cache-image-type']}"
 request_args=()
 
 if [[ -n "${args[--filter]:-}" ]]; then
+    verbose_debug "Filter: ${args[--filter]}"
     request_args+=(--data-urlencode "filter=${args[--filter]}")
 fi
 
 if [[ -n "${args[--order]:-}" ]]; then
+    verbose_debug "Order: ${args[--order]}"
     request_args+=(--data-urlencode "order=${args[--order]}")
 fi
 
 if [[ -n "${args[--sort]:-}" ]]; then
+    verbose_debug "Sort: ${args[--sort]}"
     request_args+=(--data-urlencode "sort=${args[--sort]}")
 fi
 
 if [[ -n "${args[--page]:-}" ]]; then
+    verbose_debug "Page: ${args[--page]}"
     request_args+=(--data-urlencode "page=${args[--page]}")
 fi
 
 token=$(kikoeru_get_login) || exit 1
 
+log_verbose "GET $KIKOERU_API_ENDPOINT/review"
 response=$(
     curl -sS -G \
         -A "fradeet/kikoeru-cli/$version" \
@@ -29,10 +34,9 @@ response=$(
         --write-out $'\n%{http_code}' \
         "${request_args[@]}" \
         "$KIKOERU_API_ENDPOINT/review"
-) || {
-    echo 'cURL Error.' >&2
-    exit 1
-}
+) || exit 1
+
+verbose_debug "Response: $response"
 
 status_code="${response##*$'\n'}"
 body="${response%$'\n'*}"
@@ -41,23 +45,23 @@ if [[ "$status_code" == "200" ]]; then
     log_verbose "Checking images cache..."
 
     image_dir="$KIKOERU_CLI_CACHE_DIR/work_cover_images/$image_type"
+    log_verbose "Image dir: $image_dir"
     mkdir -p "$image_dir" || exit 1
 
     images_arg=()
     for work in $(jq -br '.works[] | .id' <<<"$body"); do
         if [[ ! -f "$image_dir/$work.jpg" ]]; then
-            verbose_debug "Caching image for work: $work (type: $image_type)"
+            verbose_debug "Image need cache: work id $work."
             images_arg+=(-o "$image_dir/$work.jpg" "${KIKOERU_API_ENDPOINT%/}/cover/$work?type=$image_type")
-        else
-            verbose_debug "Image for work: $work (type: $image_type) is already cached"
         fi
     done
 
     if ((${#images_arg[@]} > 0)); then
-        log_verbose "Downloading new ${#images_arg[@]} cover images..." # TODO Fix
         curl -sS "${images_arg[@]}" || exit 1
+        log_verbose "Downloaded new ${#images_arg[@]}/3 cover images..." # TODO Fix
     fi
     if [[ "$output_format" == "alfred" ]]; then
+        log_verbose "Generating Alfred Script Filter result..."
         alfred_script_filter_result=$(jq -c \
             --arg frontend_url "$KIKOERU_FRONTEND_URL" \
             --arg image_dir "$image_dir" \
@@ -82,6 +86,7 @@ if [[ "$status_code" == "200" ]]; then
 
         echo "$alfred_script_filter_result"
     elif [[ "$output_format" == "quicker" ]]; then
+        log_verbose "Generating Quicker result..."
         win_image_dir=$(cygpath -w "$image_dir")
         quicker_result=$(jq -c \
             --arg image_dir "$win_image_dir" \
@@ -100,6 +105,7 @@ if [[ "$status_code" == "200" ]]; then
     else
         echo "$body"
     fi
+    verbose_debug "Response: $body"
     echo "[Review] Request Error: HTTP $status_code" >&2
     exit 1
 fi

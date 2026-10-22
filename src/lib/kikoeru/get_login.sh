@@ -12,16 +12,12 @@ kikoeru_get_login() {
     local token=""
     local payload response body error
 
-    if [[ -z "$username" || -z "$password" ]]; then
-        printf 'Error: username and password are required.\n' >&2
-        return 1
-    fi
-
     now=$(date +%s) || return 1
     cache_file="${cache_dir}/auth.json"
 
     # Read cache
     if [[ -f "$cache_file" ]]; then
+        log_verbose "Reading cache: $cache_file"
         if jq -e --arg username "$username" '
                 .username == $username
                 and (.token | type == "string" and length > 0)
@@ -34,6 +30,7 @@ kikoeru_get_login() {
             # Use cache token
             if jq -en --argjson now "$now" --argjson expires_at "$expires_at" \
                 '$now < $expires_at' >/dev/null; then
+                log_verbose "Using cached token."
                 printf '%s\n' "$token"
                 return 0
             fi
@@ -46,6 +43,7 @@ kikoeru_get_login() {
         --arg password "$password" \
         '{name: $name, password: $password}') || return 1
 
+    log_verbose "POST $kikoeru_api_url/auth/me"
     # POST request
     if response=$(curl -sS \
         -A "fradeet/kikoeru-cli/$version" \
@@ -60,20 +58,19 @@ kikoeru_get_login() {
         return 1
     fi
 
-    log_verbose "Kikoeru login HTTP status: ${response##*$'\n'}"
-
     http_code="${response##*$'\n'}"
     body="${response%$'\n'*}"
 
     if [[ "$http_code" == "200" ]]; then
+        log_verbose "Request succeeded, retrieving token"
         if token=$(jq -er '.token | strings | select(length > 0)' <<<"$body"); then
-            # Create cache directory
+            log_verbose "Checking cache directory"
             if ! mkdir -p "$cache_dir"; then
                 echo 'Error: failed to create cache directory.' >&2
                 return 1
             fi
 
-            # Save data
+            log_verbose "Saving auth cache"
             if ! jq -n \
                 --arg username "$username" \
                 --arg token "$token" \
@@ -83,6 +80,8 @@ kikoeru_get_login() {
                 echo 'Error: failed to save auth cache.' >&2
                 return 1
             fi
+            verbose_debug "Cache expires at $expires_at"
+            log_verbose "Saved auth cache to $cache_file"
 
             # Output
             printf '%s\n' "$token"
