@@ -1,5 +1,7 @@
-output_format="${args['--output-format']:-}"
+api_endpoint="${KIKOERU_API_ENDPOINT%/}"
+frontend_url="${KIKOERU_FRONTEND_URL%/}"
 image_type="${args['--cache-image-type']}"
+output_format="${args['--output-format']:-}"
 
 request_args=()
 
@@ -25,7 +27,7 @@ fi
 
 token=$(kikoeru_get_login) || exit 1
 
-verbose_log "GET $KIKOERU_API_ENDPOINT/review"
+verbose_log "GET $api_endpoint/review"
 response=$(
     curl -sS -G \
         -A "fradeet/kikoeru-cli/$version" \
@@ -33,7 +35,7 @@ response=$(
         -H "authorization: Bearer $token" \
         --write-out $'\n%{http_code}' \
         "${request_args[@]}" \
-        "$KIKOERU_API_ENDPOINT/review"
+        "$api_endpoint/review"
 ) || exit 1
 
 verbose_debug "Response: $response"
@@ -52,7 +54,7 @@ if [[ "$status_code" == "200" ]]; then
     for work in $(jq -br '.works[] | .id' <<<"$body"); do
         if [[ ! -f "$image_dir/$work.jpg" ]]; then
             verbose_debug "Image need cache: work id $work."
-            images_arg+=(-o "$image_dir/$work.jpg" "${KIKOERU_API_ENDPOINT%/}/cover/$work?type=$image_type")
+            images_arg+=(-o "$image_dir/$work.jpg" "$api_endpoint/cover/$work?type=$image_type")
         fi
     done
 
@@ -66,7 +68,7 @@ if [[ "$status_code" == "200" ]]; then
     if [[ "$output_format" == "alfred" ]]; then
         verbose_log "Generating Alfred Script Filter result..."
         alfred_script_filter_result=$(jq -c \
-            --arg frontend_url "$KIKOERU_FRONTEND_URL" \
+            --arg frontend_url "$frontend_url" \
             --arg image_dir "$image_dir" \
             '{
             skipknowledge: true,
