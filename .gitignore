@@ -1,8 +1,8 @@
-workflow/prefs.plist
+alfred_workflow/prefs.plist
 .DS_Store
 /*.alfredworkflow
 *kikoeru-cli
 
 # Dev
 src/lib/fake_data/
-workflow/.sync.ffs_db
+alfred_workflow/.sync.ffs_db
