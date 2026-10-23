@@ -36,7 +36,10 @@ response=$(
         --write-out $'\n%{http_code}' \
         "${request_args[@]}" \
         "$api_endpoint/review"
-) || exit 1
+) || {
+    echo '[Favourite] Review request failed.' >&2
+    exit 1
+}
 
 verbose_debug "Response: $response"
 
@@ -48,10 +51,17 @@ if [[ "$status_code" == "200" ]]; then
 
     image_dir="$KIKOERU_CLI_CACHE_DIR/work_cover_images/$image_type"
     verbose_log "Image dir: $image_dir"
-    mkdir -p "$image_dir" || exit 1
+    mkdir -p "$image_dir" || {
+        echo '[Favourite] Failed to create cover cache directory.' >&2
+        exit 1
+    }
 
     images_arg=()
-    for work in $(jq -br '.works[] | .id' <<<"$body"); do
+    work_ids=$(jq -br '.works[] | .id' <<<"$body") || {
+        echo '[Favourite] Failed to read work IDs from review response.' >&2
+        exit 1
+    }
+    for work in $work_ids; do
         if [[ ! -f "$image_dir/$work.jpg" ]]; then
             verbose_debug "Image need cache: work id $work."
             images_arg+=(-o "$image_dir/$work.jpg" "$api_endpoint/cover/$work?type=$image_type")
@@ -62,7 +72,10 @@ if [[ "$status_code" == "200" ]]; then
         curl -sS --fail --remove-on-error --parallel \
             -A "fradeet/kikoeru-cli/$version" \
             -H "authorization: Bearer $token" \
-            "${images_arg[@]}" || exit 1
+            "${images_arg[@]}" || {
+            echo '[Favourite] Cover download failed.' >&2
+            exit 1
+        }
         image_count=$((${#images_arg[@]} / 3))
         verbose_log "Downloaded new $image_count cover images..."
     fi
@@ -88,12 +101,18 @@ if [[ "$status_code" == "200" ]]; then
                     quicklookurl: ($frontend_url + "/work/" + (.id | tostring))
                 }
             ]
-        }' <<<"$body")
+        }' <<<"$body") || {
+            echo '[Favourite] Failed to generate Alfred result.' >&2
+            exit 1
+        }
 
         echo "$alfred_script_filter_result"
     elif [[ "$output_format" == "quicker" ]]; then
         verbose_log "Generating Quicker result..."
-        win_image_dir=$(cygpath -w "$image_dir")
+        win_image_dir=$(cygpath -w "$image_dir") || {
+            echo '[Favourite] Failed to convert cover cache path for Quicker.' >&2
+            exit 1
+        }
         quicker_result=$(jq -c \
             --arg image_dir "$win_image_dir" \
             '{
@@ -106,7 +125,10 @@ if [[ "$status_code" == "200" ]]; then
                     DataType: "custom",
                 }
             ]
-        }' <<<"$body")
+        }' <<<"$body") || {
+            echo '[Favourite] Failed to generate Quicker result.' >&2
+            exit 1
+        }
         echo "$quicker_result"
     else
         echo "$body"
