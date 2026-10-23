@@ -21,7 +21,46 @@
 				<false/>
 			</dict>
 		</array>
+		<key>674AE392-F287-4D53-844A-383C8200FBC7</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>CA986789-C077-404D-93DB-BA2F84FA51DE</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>D6A9F116-7B7E-4F51-93D9-FF51226B02FB</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>D6F13E7B-9376-47F8-BD1C-47104A3B9CA1</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
@@ -45,27 +84,6 @@
 	<string>Kikoeru</string>
 	<key>objects</key>
 	<array>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>browser</key>
-				<string></string>
-				<key>skipqueryencode</key>
-				<false/>
-				<key>skipvarencode</key>
-				<false/>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string>{var:KIKOERU_FRONTEND_URL}/work/{query}</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
-			<key>uid</key>
-			<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
@@ -120,6 +138,27 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>{var:KIKOERU_FRONTEND_URL}/work/{query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<true/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -168,6 +207,159 @@
 			<key>version</key>
 			<integer>3</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<true/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>{var:KW_LISTENED_LIST_COMMAND}</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Loading...</string>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>entries/alfred/fav_listened.sh</string>
+				<key>skipuniversalaction</key>
+				<true/>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Kikoeru Listened List</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>D6F13E7B-9376-47F8-BD1C-47104A3B9CA1</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<true/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>{var:KW_REPLAY_LIST_COMMAND}</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Loading...</string>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>entries/alfred/fav_replay.sh</string>
+				<key>skipuniversalaction</key>
+				<true/>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Kikoeru Replay List</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>D6A9F116-7B7E-4F51-93D9-FF51226B02FB</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<true/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>{var:KW_POSTPONED_LIST_COMMAND}</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Loading...</string>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>entries/alfred/fav_postponed.sh</string>
+				<key>skipuniversalaction</key>
+				<true/>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Kikoeru Postponed List</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>674AE392-F287-4D53-844A-383C8200FBC7</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string># README</string>
@@ -181,6 +373,15 @@
 			<real>35</real>
 			<key>ypos</key>
 			<real>20</real>
+		</dict>
+		<key>674AE392-F287-4D53-844A-383C8200FBC7</key>
+		<dict>
+			<key>note</key>
+			<string>Listening</string>
+			<key>xpos</key>
+			<real>35</real>
+			<key>ypos</key>
+			<real>620</real>
 		</dict>
 		<key>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</key>
 		<dict>
@@ -197,6 +398,24 @@
 			<real>35</real>
 			<key>ypos</key>
 			<real>170</real>
+		</dict>
+		<key>D6A9F116-7B7E-4F51-93D9-FF51226B02FB</key>
+		<dict>
+			<key>note</key>
+			<string>Listening</string>
+			<key>xpos</key>
+			<real>35</real>
+			<key>ypos</key>
+			<real>470</real>
+		</dict>
+		<key>D6F13E7B-9376-47F8-BD1C-47104A3B9CA1</key>
+		<dict>
+			<key>note</key>
+			<string>Listening</string>
+			<key>xpos</key>
+			<real>35</real>
+			<key>ypos</key>
+			<real>320</real>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
@@ -327,10 +546,73 @@
 			<key>variable</key>
 			<string>KW_LISTENING_LIST_COMMAND</string>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>kkf3</string>
+				<key>placeholder</key>
+				<string>kkf3</string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Favourite (Listened) Command</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>KW_LISTENED_LIST_COMMAND</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>kkf4</string>
+				<key>placeholder</key>
+				<string>kkf4</string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Favourite (Replay) Command</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>KW_REPLAY_LIST_COMMAND</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>kkf5</string>
+				<key>placeholder</key>
+				<string>kkf5</string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Favourite (Postponed) Command</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>KW_POSTPONED_LIST_COMMAND</string>
+		</dict>
 	</array>
 	<key>version</key>
 	<string>0.1.0</string>
 	<key>webaddress</key>
-	<string></string>
+	<string>https://github.com/fradeet/alfred-kikoeru-workflow</string>
 </dict>
 </plist>
