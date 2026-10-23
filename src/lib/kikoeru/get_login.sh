@@ -30,9 +30,35 @@ kikoeru_get_login() {
             # Use cache token
             if jq -en --argjson now "$now" --argjson expires_at "$expires_at" \
                 '$now < $expires_at' >/dev/null; then
-                verbose_log "Using cached token."
-                printf '%s\n' "$token"
-                return 0
+                verbose_log "GET $kikoeru_api_url/auth/me"
+                if response=$(curl -sS \
+                    -A "fradeet/kikoeru-cli/$version" \
+                    -H 'accept: application/json' \
+                    -H "authorization: Bearer $token" \
+                    --write-out $'\n%{http_code}' \
+                    "$kikoeru_api_url/auth/me"); then
+                    http_code="${response##*$'\n'}"
+                    body="${response%$'\n'*}"
+                else
+                    echo 'Error: Token validation request failed.' >&2
+                    return 1
+                fi
+
+                case "$http_code" in
+                    200)
+                        verbose_log "Using validated cached token."
+                        printf '%s\n' "$token"
+                        return 0
+                        ;;
+                    401)
+                        verbose_log "Cached token is invalid; logging in."
+                        ;;
+                    *)
+                        error=$(jq -r '.error // "Unknown error"' <<<"$body" 2>/dev/null) || error="Unknown error"
+                        printf 'Token validation failed (HTTP %s): %s\n' "$http_code" "$error" >&2
+                        return 1
+                        ;;
+                esac
             fi
         fi
     fi
