@@ -57,7 +57,7 @@
 				<key>spaces</key>
 				<string></string>
 				<key>url</key>
-				<string>{var:KIKOERU_CLI_FRONTEND_URL}/work/{query}</string>
+				<string>{var:KIKOERU_CLI_FRONTEND_BASE_URL}/work/{query}</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.openurl</string>
@@ -245,7 +245,7 @@
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>KIKOERU_CLI_FRONTEND_URL</string>
+			<string>KIKOERU_CLI_FRONTEND_BASE_URL</string>
 		</dict>
 		<dict>
 			<key>config</key>

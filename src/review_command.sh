@@ -22,6 +22,7 @@ token=$(kikoeru_get_login) || exit 1
 
 response=$(
     curl -sS -G \
+        -A "fradeet/kikoeru-cli/$version" \
         -H 'accept: application/json' \
         -H "authorization: Bearer $token" \
         --write-out $'\n%{http_code}' \
@@ -42,7 +43,7 @@ if [[ "$output_format" == "alfred" ]]; then
     fi
 
     alfred_script_filter_result=$(jq -c \
-        --arg frontend_url "$KIKOERU_CLI_FRONTEND_URL" '{
+        --arg frontend_url "$KIKOERU_CLI_FRONTEND_BASE_URL" '{
             skipknowledge: true,
             cache: {
                 seconds: 60

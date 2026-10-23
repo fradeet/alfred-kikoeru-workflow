@@ -1,15 +1,15 @@
 name: kikoeru_cli
 help: An ASMR platform
-version: 0.2.0
+version: 0.3.1
 
 environment_variables:
   - name: KIKOERU_CLI_API_URL
     required: true
-    help: The kikoeru api endpoint, like https://api.example.com/api .
+    help: The kikoeru api endpoint, like http://127.0.0.1:8888/api .
   - name: KIKOERU_CLI_CACHE_DIR
-    required: true
+    default: /tmp/kikoeru_cli
     help: Path to the cache directory
-  - name: KIKOERU_CLI_FRONTEND_URL
+  - name: KIKOERU_CLI_FRONTEND_BASE_URL
     required: true
     help: Path to the frontend URL
   - name: KIKOERU_CLI_PASSWORD
@@ -36,7 +36,7 @@ commands:
 
     flags:
       - long: --filter
-        arg: name
+        arg: status
         allowed: [marked, listening, listened, replay, postponed]
         help: Filter by listening status
       - long: --order
@@ -54,7 +54,7 @@ commands:
           ]
         help: Order by field
       - long: --output-format
-        arg: name
+        arg: format
         allowed: [alfred]
         help: Output format
       - long: --page
