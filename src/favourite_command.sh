@@ -59,7 +59,7 @@ if [[ "$status_code" == "200" ]]; then
     done
 
     if ((${#images_arg[@]} > 0)); then
-        curl -sS --remove-on-error --parallel \
+        curl -sS --fail --remove-on-error --parallel \
             -A "fradeet/kikoeru-cli/$version" \
             -H "authorization: Bearer $token" \
             "${images_arg[@]}" || exit 1
