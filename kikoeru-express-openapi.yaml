@@ -469,8 +469,31 @@ components:
       type: object
       description: |
         作品元数据及当前用户的评价。
+        required 中的字段均会返回；允许为 null 的字段仍可能返回 null。
         不包含图片内容或缩略图 URL；使用 id 请求 /api/cover/{id}?type=240x240 获取缩略图。
       additionalProperties: true
+      required:
+        - id
+        - title
+        - circle_id
+        - name
+        - circle
+        - release
+        - dl_count
+        - price
+        - review_count
+        - rate_count
+        - rate_average_2dp
+        - rate_count_detail
+        - rank
+        - vas
+        - tags
+        - userRating
+        - review_text
+        - progress
+        - updated_at
+        - user_name
+        - nsfw
       properties:
         id:
           type: integer
@@ -485,6 +508,7 @@ components:
         circle:
           type: object
           description: 社团信息。
+          required: [id, name]
           properties:
             id:
               type: integer
@@ -517,6 +541,7 @@ components:
           description: 声优列表。
           items:
             type: object
+            required: [id, name]
             properties:
               id:
                 type: string
@@ -528,6 +553,7 @@ components:
           description: 标签列表。无标签时，当前后端的 LEFT JOIN 聚合可能返回 id 和 name 均为 null 的对象。
           items:
             type: object
+            required: [id, name]
             properties:
               id:
                 type: [integer, 'null']

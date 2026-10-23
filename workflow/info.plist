@@ -57,7 +57,7 @@
 				<key>spaces</key>
 				<string></string>
 				<key>url</key>
-				<string>{var:KIKOERU_CLI_FRONTEND_BASE_URL}/work/{query}</string>
+				<string>{var:KIKOERU_FRONTEND_URL}/work/{query}</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.openurl</string>
@@ -96,7 +96,7 @@
 				<key>script</key>
 				<string>export KIKOERU_CLI_CACHE_DIR="$alfred_workflow_cache"
 
-./kikoeru_cli review --output-format alfred --filter marked --order updated_at --sort desc</string>
+./kikoeru-cli favourite --output-format alfred --filter marked --order updated_at --sort desc</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -149,7 +149,7 @@
 				<key>script</key>
 				<string>export KIKOERU_CLI_CACHE_DIR="$alfred_workflow_cache"
 
-./kikoeru_cli review --output-format alfred --filter listening --order updated_at --sort desc</string>
+./kikoeru-cli favourite --output-format alfred --filter listening --order updated_at --sort desc</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -224,7 +224,7 @@
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>KIKOERU_CLI_API_URL</string>
+			<string>KIKOERU_API_ENDPOINT</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -245,7 +245,7 @@
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>KIKOERU_CLI_FRONTEND_BASE_URL</string>
+			<string>KIKOERU_FRONTEND_URL</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -266,7 +266,7 @@
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>KIKOERU_CLI_USERNAME</string>
+			<string>KIKOERU_USERNAME</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -287,7 +287,7 @@
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>KIKOERU_CLI_PASSWORD</string>
+			<string>KIKOERU_PASSWORD</string>
 		</dict>
 		<dict>
 			<key>config</key>

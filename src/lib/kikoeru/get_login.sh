@@ -1,9 +1,9 @@
 kikoeru_get_login() {
-    local username="$KIKOERU_CLI_USERNAME"
-    local password="$KIKOERU_CLI_PASSWORD"
+    local username="$KIKOERU_USERNAME"
+    local password="$KIKOERU_PASSWORD"
     local cache_dir="$KIKOERU_CLI_CACHE_DIR"
 
-    local kikoeru_api_url="$KIKOERU_CLI_API_URL"
+    local kikoeru_api_url="${KIKOERU_API_ENDPOINT%/}"
 
     local cache_file
     local expires_at=""
@@ -12,16 +12,12 @@ kikoeru_get_login() {
     local token=""
     local payload response body error
 
-    if [[ -z "$username" || -z "$password" ]]; then
-        printf 'Error: username and password are required.\n' >&2
-        return 1
-    fi
-
     now=$(date +%s) || return 1
     cache_file="${cache_dir}/auth.json"
 
     # Read cache
     if [[ -f "$cache_file" ]]; then
+        verbose_log "Reading cache: $cache_file"
         if jq -e --arg username "$username" '
                 .username == $username
                 and (.token | type == "string" and length > 0)
@@ -34,8 +30,35 @@ kikoeru_get_login() {
             # Use cache token
             if jq -en --argjson now "$now" --argjson expires_at "$expires_at" \
                 '$now < $expires_at' >/dev/null; then
-                printf '%s\n' "$token"
-                return 0
+                verbose_log "GET $kikoeru_api_url/auth/me"
+                if response=$(curl -sS \
+                    -A "fradeet/kikoeru-cli/$version" \
+                    -H 'accept: application/json' \
+                    -H "authorization: Bearer $token" \
+                    --write-out $'\n%{http_code}' \
+                    "$kikoeru_api_url/auth/me"); then
+                    http_code="${response##*$'\n'}"
+                    body="${response%$'\n'*}"
+                else
+                    echo 'Error: Token validation request failed.' >&2
+                    return 1
+                fi
+
+                case "$http_code" in
+                    200)
+                        verbose_log "Using validated cached token."
+                        printf '%s\n' "$token"
+                        return 0
+                        ;;
+                    401)
+                        verbose_log "Cached token is invalid; logging in."
+                        ;;
+                    *)
+                        error=$(jq -r '.error // "Unknown error"' <<<"$body" 2>/dev/null) || error="Unknown error"
+                        printf 'Token validation failed (HTTP %s): %s\n' "$http_code" "$error" >&2
+                        return 1
+                        ;;
+                esac
             fi
         fi
     fi
@@ -46,6 +69,7 @@ kikoeru_get_login() {
         --arg password "$password" \
         '{name: $name, password: $password}') || return 1
 
+    verbose_log "POST $kikoeru_api_url/auth/me"
     # POST request
     if response=$(curl -sS \
         -A "fradeet/kikoeru-cli/$version" \
@@ -60,20 +84,19 @@ kikoeru_get_login() {
         return 1
     fi
 
-    log_verbose "Kikoeru login HTTP status: ${response##*$'\n'}"
-
     http_code="${response##*$'\n'}"
     body="${response%$'\n'*}"
 
     if [[ "$http_code" == "200" ]]; then
+        verbose_log "Request succeeded, retrieving token"
         if token=$(jq -er '.token | strings | select(length > 0)' <<<"$body"); then
-            # Create cache directory
+            verbose_log "Checking cache directory"
             if ! mkdir -p "$cache_dir"; then
                 echo 'Error: failed to create cache directory.' >&2
                 return 1
             fi
 
-            # Save data
+            verbose_log "Saving auth cache"
             if ! jq -n \
                 --arg username "$username" \
                 --arg token "$token" \
@@ -83,6 +106,8 @@ kikoeru_get_login() {
                 echo 'Error: failed to save auth cache.' >&2
                 return 1
             fi
+            verbose_debug "Cache expires at $expires_at"
+            verbose_log "Saved auth cache to $cache_file"
 
             # Output
             printf '%s\n' "$token"

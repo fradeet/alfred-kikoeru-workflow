@@ -1,28 +1,28 @@
-name: kikoeru_cli
+name: kikoeru-cli
 help: An ASMR platform
-version: 0.3.1
+version: 0.7.1
 
 environment_variables:
-  - name: KIKOERU_CLI_API_URL
+  - name: KIKOERU_API_ENDPOINT
     required: true
     help: The kikoeru api endpoint, like http://127.0.0.1:8888/api .
   - name: KIKOERU_CLI_CACHE_DIR
     default: /tmp/kikoeru_cli
     help: Path to the cache directory
-  - name: KIKOERU_CLI_FRONTEND_BASE_URL
+  - name: KIKOERU_FRONTEND_URL
     required: true
     help: Path to the frontend URL
-  - name: KIKOERU_CLI_PASSWORD
+  - name: KIKOERU_PASSWORD
     required: true
     help: Password to use for logging in
-  - name: KIKOERU_CLI_USERNAME
+  - name: KIKOERU_USERNAME
     required: true
     help: Username to use for logging in
 
 flags:
   - long: --verbose
     short: -v
-    help: Increase output verbosity (up to -v)
+    help: Increase output verbosity (up to -vv)
     repeatable: true
 
 dependencies:
@@ -31,10 +31,15 @@ dependencies:
   - date
 
 commands:
-  - name: review
-    help: Reviewed works on Kikoeru platform
+  - name: favourite
 
     flags:
+      - long: --cache-image-type
+        arg: type
+        allowed: [main, sam, 240x240, 360x360]
+        default: sam
+        needs: [--output-format]
+        help: Cache image type
       - long: --filter
         arg: status
         allowed: [marked, listening, listened, replay, postponed]
@@ -55,7 +60,7 @@ commands:
         help: Order by field
       - long: --output-format
         arg: format
-        allowed: [alfred]
+        allowed: [alfred, quicker]
         help: Output format
       - long: --page
         arg: number
@@ -66,4 +71,4 @@ commands:
         help: Sort order
 
     examples:
-      - kikoeru review
+      - kikoeru-cli favourite

@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "bashly": {
+      "source": "bashly-framework/bashly-ai-kit",
+      "sourceType": "github",
+      "skillPath": "skills/bashly/SKILL.md",
+      "computedHash": "db5b19cd309887a5bf8d4743ba17a4c0b1b2c21dbd7e0d7cd2b346eac05af4af"
+    }
+  }
+}
