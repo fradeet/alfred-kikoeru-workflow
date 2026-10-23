@@ -3,7 +3,7 @@ kikoeru_get_login() {
     local password="$KIKOERU_PASSWORD"
     local cache_dir="$KIKOERU_CLI_CACHE_DIR"
 
-    local kikoeru_api_url="$KIKOERU_API_ENDPOINT"
+    local kikoeru_api_url="${KIKOERU_API_ENDPOINT%/}"
 
     local cache_file
     local expires_at=""
