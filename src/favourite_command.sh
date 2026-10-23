@@ -134,7 +134,6 @@ if [[ "$status_code" == "200" ]]; then
         echo "$body"
     fi
 else
-    verbose_debug "Response: $body"
-    echo "[Review] Request Error: HTTP $status_code" >&2
+    printf '[Favourite] Review request failed (HTTP %s): %s\n' "$status_code" "$body" >&2
     exit 1
 fi
