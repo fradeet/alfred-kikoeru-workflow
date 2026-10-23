@@ -63,7 +63,8 @@ if [[ "$status_code" == "200" ]]; then
             -A "fradeet/kikoeru-cli/$version" \
             -H "authorization: Bearer $token" \
             "${images_arg[@]}" || exit 1
-        verbose_log "Downloaded new ${#images_arg[@]}/3 cover images..." # TODO Fix
+        image_count=$((${#images_arg[@]} / 3))
+        verbose_log "Downloaded new $image_count cover images..."
     fi
     if [[ "$output_format" == "alfred" ]]; then
         verbose_log "Generating Alfred Script Filter result..."
