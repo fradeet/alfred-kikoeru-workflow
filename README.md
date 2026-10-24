@@ -2,26 +2,26 @@
 
 ## Setup
 
-You need `curl`, `jq` to run the CLI, and Alfred Powerpack to run the workflow.
+You need `curl` and `jq` to use the CLI, and Alfred Powerpack to run the workflow.
 
 ## Usage
 
-For Alfred workflow usage instructions, see [alfred_workflow/README.md][] .
+For Alfred workflow usage instructions, see [alfred_workflow/README.md][].
 
 ## Development
 
-Before developing, install `bashly`.
+Before developing, install [bashly][] to develop the CLI.
 
-### Workflow Readme
+### Workflow README
 
 Follow the [Alfred Gallery Workflow Style Guide][].
 
-
-Edit [alfred_workflow/README.md][] and run `./script/sync_readme.sh` to update the workflow readme.
+Edit [alfred_workflow/README.md][] and run `./script/sync_readme.sh` to update the workflow README.
 
 ### CLI
 
-Before editing the CLI, run `./script/sync_cli.sh` to update the CLI to workflow.
+Before editing the CLI, run `./script/sync-cli.sh` to build the CLI and copy it into the workflow.
 
-[alfred_workflow/README.md]: /alfred_workflow/README.md
+[alfred_workflow/README.md]: alfred_workflow/README.md
+[bashly]: https://bashly.dev/
 [Alfred Gallery Workflow Style Guide]: https://alfred.app/submit/styleguide/
