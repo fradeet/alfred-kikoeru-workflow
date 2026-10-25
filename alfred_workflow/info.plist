@@ -69,6 +69,16 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>2E39119D-9E71-40C4-965C-A7A5EAC382B5</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Open Work in DLsite</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
 		</array>
 		<key>BD9D53D5-0B9A-4D32-9C16-6E672B3952D2</key>
 		<array>
@@ -95,6 +105,16 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>2E39119D-9E71-40C4-965C-A7A5EAC382B5</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Open Work in DLsite</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
 		</array>
 		<key>D6A9F116-7B7E-4F51-93D9-FF51226B02FB</key>
 		<array>
@@ -108,6 +128,16 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>2E39119D-9E71-40C4-965C-A7A5EAC382B5</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Open Work in DLsite</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
 		</array>
 		<key>D6F13E7B-9376-47F8-BD1C-47104A3B9CA1</key>
 		<array>
@@ -118,6 +148,16 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>2E39119D-9E71-40C4-965C-A7A5EAC382B5</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Open Work in DLsite</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
