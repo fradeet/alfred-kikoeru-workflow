@@ -57,6 +57,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>573E3EEB-1757-4F60-AC64-DFE576564A65</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>64F3763C-8A8D-4E1D-AD02-5706AEE9DB01</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>64F3763C-8A8D-4E1D-AD02-5706AEE9DB01</key>
 		<array>
 			<dict>
@@ -93,11 +106,37 @@
 				<false/>
 			</dict>
 		</array>
+		<key>7BD2AB7B-27CB-4ADA-8ED0-A0E1F33AF400</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>89C8A6ED-D5E0-4B18-852F-375C23E1BFDF</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>875C93AA-B8FC-4802-9DBB-ACB8153C2C55</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
 				<string>C3989CB9-1162-441F-8209-7BF6E53FA33C</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>89C8A6ED-D5E0-4B18-852F-375C23E1BFDF</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>573E3EEB-1757-4F60-AC64-DFE576564A65</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -123,7 +162,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>64F3763C-8A8D-4E1D-AD02-5706AEE9DB01</string>
+				<string>7BD2AB7B-27CB-4ADA-8ED0-A0E1F33AF400</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -414,6 +453,21 @@ printf '%s' "$number"</string>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>tasksettings</key>
+				<dict/>
+				<key>taskuid</key>
+				<string>com.alfredapp.automation.core/argument-processing/argument.leading.1</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.automation.task</string>
+			<key>uid</key>
+			<string>573E3EEB-1757-4F60-AC64-DFE576564A65</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<true/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -470,6 +524,24 @@ printf '%s' "$number"</string>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>tasksettings</key>
+				<dict>
+					<key>match_string</key>
+					<string>{var:KIKOERU_FRONTEND_URL}</string>
+				</dict>
+				<key>taskuid</key>
+				<string>com.alfredapp.automation.core/argument-processing/argument.matching</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.automation.task</string>
+			<key>uid</key>
+			<string>7BD2AB7B-27CB-4ADA-8ED0-A0E1F33AF400</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>argumenttype</key>
 				<integer>2</integer>
 				<key>keyword</key>
@@ -479,7 +551,7 @@ printf '%s' "$number"</string>
 				<key>subtext</key>
 				<string></string>
 				<key>text</key>
-				<string>Open Current Work to DLsite Page (Chrome)</string>
+				<string>Kikoeru: DLsite Page of Browser First Work</string>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -496,12 +568,32 @@ printf '%s' "$number"</string>
 				<key>tasksettings</key>
 				<dict/>
 				<key>taskuid</key>
-				<string>com.alfredapp.automation.extras/web-browsers/frontmost-browser/frontmost.tabs.current</string>
+				<string>com.alfredapp.automation.extras/web-browsers/frontmost-browser/frontmost.tabs</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.automation.task</string>
 			<key>uid</key>
 			<string>C3989CB9-1162-441F-8209-7BF6E53FA33C</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>tasksettings</key>
+				<dict>
+					<key>match_string</key>
+					<string>/work/(?:RJ)?(\d+)</string>
+					<key>regex</key>
+					<true/>
+				</dict>
+				<key>taskuid</key>
+				<string>com.alfredapp.automation.core/argument-processing/argument.matching</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.automation.task</string>
+			<key>uid</key>
+			<string>89C8A6ED-D5E0-4B18-852F-375C23E1BFDF</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -672,12 +764,19 @@ fi</string>
 			<key>ypos</key>
 			<real>20</real>
 		</dict>
+		<key>573E3EEB-1757-4F60-AC64-DFE576564A65</key>
+		<dict>
+			<key>xpos</key>
+			<real>1135</real>
+			<key>ypos</key>
+			<real>320</real>
+		</dict>
 		<key>64F3763C-8A8D-4E1D-AD02-5706AEE9DB01</key>
 		<dict>
 			<key>note</key>
 			<string>Extract work RJ id</string>
 			<key>xpos</key>
-			<real>695</real>
+			<real>1355</real>
 			<key>ypos</key>
 			<real>320</real>
 		</dict>
@@ -690,10 +789,24 @@ fi</string>
 			<key>ypos</key>
 			<real>620</real>
 		</dict>
+		<key>7BD2AB7B-27CB-4ADA-8ED0-A0E1F33AF400</key>
+		<dict>
+			<key>xpos</key>
+			<real>695</real>
+			<key>ypos</key>
+			<real>320</real>
+		</dict>
 		<key>875C93AA-B8FC-4802-9DBB-ACB8153C2C55</key>
 		<dict>
 			<key>xpos</key>
 			<real>255</real>
+			<key>ypos</key>
+			<real>320</real>
+		</dict>
+		<key>89C8A6ED-D5E0-4B18-852F-375C23E1BFDF</key>
+		<dict>
+			<key>xpos</key>
+			<real>915</real>
 			<key>ypos</key>
 			<real>320</real>
 		</dict>
