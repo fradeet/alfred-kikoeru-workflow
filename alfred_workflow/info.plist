@@ -496,7 +496,7 @@ printf '%s' "$number"</string>
 				<key>tasksettings</key>
 				<dict/>
 				<key>taskuid</key>
-				<string>com.alfredapp.automation.extras/web-browsers/chromium-browsers/chromium.tabs.current</string>
+				<string>com.alfredapp.automation.extras/web-browsers/frontmost-browser/frontmost.tabs.current</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.automation.task</string>
