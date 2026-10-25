@@ -216,50 +216,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>browser</key>
-				<string></string>
-				<key>skipqueryencode</key>
-				<false/>
-				<key>skipvarencode</key>
-				<false/>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string>https://www.dlsite.com/home/work/=/product_id/RJ{query}.html</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
-			<key>uid</key>
-			<string>C0E4FAE4-75FB-4CE6-A076-B31F82932F3E</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>script</key>
-				<string>printf '%08d' $1</string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>type</key>
-				<integer>11</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>2E93332F-6D24-4589-B669-E0FA54D14BEE</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>alfredfiltersresults</key>
 				<true/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -307,6 +263,56 @@
 			<string>CA986789-C077-404D-93DB-BA2F84FA51DE</string>
 			<key>version</key>
 			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>https://www.dlsite.com/home/work/=/product_id/RJ{query}.html</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>C0E4FAE4-75FB-4CE6-A076-B31F82932F3E</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>number="$1"
+
+if (( ${#number} &gt; 6 )); then
+    number=$(printf '%08d' "$number")
+fi
+
+printf '%s' "$number"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>11</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>2E93332F-6D24-4589-B669-E0FA54D14BEE</string>
+			<key>version</key>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>type</key>
