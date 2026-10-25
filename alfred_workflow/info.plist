@@ -12,7 +12,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
+				<string>BD9D53D5-0B9A-4D32-9C16-6E672B3952D2</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -22,6 +22,19 @@
 			</dict>
 		</array>
 		<key>674AE392-F287-4D53-844A-383C8200FBC7</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>BD9D53D5-0B9A-4D32-9C16-6E672B3952D2</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>BD9D53D5-0B9A-4D32-9C16-6E672B3952D2</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
@@ -38,7 +51,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
+				<string>BD9D53D5-0B9A-4D32-9C16-6E672B3952D2</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -51,7 +64,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
+				<string>BD9D53D5-0B9A-4D32-9C16-6E672B3952D2</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -64,7 +77,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
+				<string>BD9D53D5-0B9A-4D32-9C16-6E672B3952D2</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -153,6 +166,14 @@
 			<string>alfred.workflow.action.openurl</string>
 			<key>uid</key>
 			<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.junction</string>
+			<key>uid</key>
+			<string>BD9D53D5-0B9A-4D32-9C16-6E672B3952D2</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -385,10 +406,19 @@
 		</dict>
 		<key>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</key>
 		<dict>
+			<key>note</key>
+			<string>Frontend</string>
 			<key>xpos</key>
-			<real>255</real>
+			<real>475</real>
 			<key>ypos</key>
 			<real>20</real>
+		</dict>
+		<key>BD9D53D5-0B9A-4D32-9C16-6E672B3952D2</key>
+		<dict>
+			<key>xpos</key>
+			<real>295</real>
+			<key>ypos</key>
+			<real>50</real>
 		</dict>
 		<key>CA986789-C077-404D-93DB-BA2F84FA51DE</key>
 		<dict>
