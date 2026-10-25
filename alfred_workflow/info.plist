@@ -57,6 +57,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>64F3763C-8A8D-4E1D-AD02-5706AEE9DB01</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>2E93332F-6D24-4589-B669-E0FA54D14BEE</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>674AE392-F287-4D53-844A-383C8200FBC7</key>
 		<array>
 			<dict>
@@ -80,11 +93,37 @@
 				<false/>
 			</dict>
 		</array>
+		<key>875C93AA-B8FC-4802-9DBB-ACB8153C2C55</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>C3989CB9-1162-441F-8209-7BF6E53FA33C</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>BD9D53D5-0B9A-4D32-9C16-6E672B3952D2</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
 				<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>C3989CB9-1162-441F-8209-7BF6E53FA33C</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>64F3763C-8A8D-4E1D-AD02-5706AEE9DB01</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -176,6 +215,27 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>{var:KIKOERU_FRONTEND_URL}/work/{query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<true/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -230,6 +290,43 @@
 			<integer>3</integer>
 		</dict>
 		<dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.junction</string>
+			<key>uid</key>
+			<string>BD9D53D5-0B9A-4D32-9C16-6E672B3952D2</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>number="$1"
+
+if (( ${#number} &gt; 6 )); then
+    number=$(printf '%08d' "$number")
+fi
+
+printf '%s' "$number"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>11</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>2E93332F-6D24-4589-B669-E0FA54D14BEE</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
 			<key>config</key>
 			<dict>
 				<key>browser</key>
@@ -241,20 +338,12 @@
 				<key>spaces</key>
 				<string></string>
 				<key>url</key>
-				<string>{var:KIKOERU_FRONTEND_URL}/work/{query}</string>
+				<string>https://www.dlsite.com/home/work/=/product_id/RJ{query}.html</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.openurl</string>
 			<key>uid</key>
-			<string>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.junction</string>
-			<key>uid</key>
-			<string>BD9D53D5-0B9A-4D32-9C16-6E672B3952D2</string>
+			<string>C0E4FAE4-75FB-4CE6-A076-B31F82932F3E</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -313,56 +402,6 @@
 			<string>CA986789-C077-404D-93DB-BA2F84FA51DE</string>
 			<key>version</key>
 			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>browser</key>
-				<string></string>
-				<key>skipqueryencode</key>
-				<false/>
-				<key>skipvarencode</key>
-				<false/>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string>https://www.dlsite.com/home/work/=/product_id/RJ{query}.html</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
-			<key>uid</key>
-			<string>C0E4FAE4-75FB-4CE6-A076-B31F82932F3E</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>script</key>
-				<string>number="$1"
-
-if (( ${#number} &gt; 6 )); then
-    number=$(printf '%08d' "$number")
-fi
-
-printf '%s' "$number"</string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>type</key>
-				<integer>11</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>2E93332F-6D24-4589-B669-E0FA54D14BEE</string>
-			<key>version</key>
-			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>type</key>
@@ -427,6 +466,69 @@ printf '%s' "$number"</string>
 			<string>D6F13E7B-9376-47F8-BD1C-47104A3B9CA1</string>
 			<key>version</key>
 			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>keyword</key>
+				<string>{var:KW_CURRENT_WORK_TO_DLSITE}</string>
+				<key>skipuniversalaction</key>
+				<true/>
+				<key>subtext</key>
+				<string></string>
+				<key>text</key>
+				<string>Open Current Work to DLsite Page (Chrome)</string>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>875C93AA-B8FC-4802-9DBB-ACB8153C2C55</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>tasksettings</key>
+				<dict/>
+				<key>taskuid</key>
+				<string>com.alfredapp.automation.extras/web-browsers/chromium-browsers/chromium.tabs.current</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.automation.task</string>
+			<key>uid</key>
+			<string>C3989CB9-1162-441F-8209-7BF6E53FA33C</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>if [[ "$1" =~ /work/(RJ)?([0-9]+) ]]; then
+    printf '%s' "${BASH_REMATCH[2]}"
+fi</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>64F3763C-8A8D-4E1D-AD02-5706AEE9DB01</string>
+			<key>version</key>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -570,6 +672,15 @@ printf '%s' "$number"</string>
 			<key>ypos</key>
 			<real>20</real>
 		</dict>
+		<key>64F3763C-8A8D-4E1D-AD02-5706AEE9DB01</key>
+		<dict>
+			<key>note</key>
+			<string>Extract work RJ id</string>
+			<key>xpos</key>
+			<real>695</real>
+			<key>ypos</key>
+			<real>320</real>
+		</dict>
 		<key>674AE392-F287-4D53-844A-383C8200FBC7</key>
 		<dict>
 			<key>note</key>
@@ -578,6 +689,13 @@ printf '%s' "$number"</string>
 			<real>35</real>
 			<key>ypos</key>
 			<real>620</real>
+		</dict>
+		<key>875C93AA-B8FC-4802-9DBB-ACB8153C2C55</key>
+		<dict>
+			<key>xpos</key>
+			<real>255</real>
+			<key>ypos</key>
+			<real>320</real>
 		</dict>
 		<key>8F2C62A5-6B29-4268-BA8F-EB7F4B247265</key>
 		<dict>
@@ -603,6 +721,13 @@ printf '%s' "$number"</string>
 			<real>695</real>
 			<key>ypos</key>
 			<real>170</real>
+		</dict>
+		<key>C3989CB9-1162-441F-8209-7BF6E53FA33C</key>
+		<dict>
+			<key>xpos</key>
+			<real>475</real>
+			<key>ypos</key>
+			<real>320</real>
 		</dict>
 		<key>CA986789-C077-404D-93DB-BA2F84FA51DE</key>
 		<dict>
@@ -822,6 +947,27 @@ printf '%s' "$number"</string>
 			<string>textfield</string>
 			<key>variable</key>
 			<string>KW_POSTPONED_LIST_COMMAND</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>kkcd</string>
+				<key>placeholder</key>
+				<string>kkcd</string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Current work to DLsite</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>KW_CURRENT_WORK_TO_DLSITE</string>
 		</dict>
 	</array>
 	<key>version</key>
