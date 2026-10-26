@@ -48,38 +48,38 @@ body="${response%$'\n'*}"
 
 if [[ "$status_code" == "200" ]]; then
     if [[ -n "$output_format" ]]; then
-    verbose_log "Checking images cache..."
+        verbose_log "Checking images cache..."
 
-    image_dir="$KIKOERU_CLI_CACHE_DIR/work_cover_images/$image_type"
-    verbose_log "Image dir: $image_dir"
-    mkdir -p "$image_dir" || {
-        echo '[Favourite] Failed to create cover cache directory.' >&2
-        exit 1
-    }
-
-    images_arg=()
-    work_ids=$(jq -br '.works[] | .id' <<<"$body") || {
-        echo '[Favourite] Failed to read work IDs from review response.' >&2
-        exit 1
-    }
-    for work in $work_ids; do
-        if [[ ! -f "$image_dir/$work.jpg" ]]; then
-            verbose_debug "Image need cache: work id $work."
-            images_arg+=(-o "$image_dir/$work.jpg" "$api_endpoint/cover/$work?type=$image_type")
-        fi
-    done
-
-    if ((${#images_arg[@]} > 0)); then
-        curl -sS --fail --remove-on-error --parallel \
-            -A "fradeet/kikoeru-cli/$version" \
-            -H "authorization: Bearer $token" \
-            "${images_arg[@]}" || {
-            echo '[Favourite] Cover download failed.' >&2
+        image_dir="$KIKOERU_CLI_CACHE_DIR/work_cover_images/$image_type"
+        verbose_log "Image dir: $image_dir"
+        mkdir -p "$image_dir" || {
+            echo '[Favourite] Failed to create cover cache directory.' >&2
             exit 1
         }
-        image_count=$((${#images_arg[@]} / 3))
-        verbose_log "Downloaded new $image_count cover images..."
-    fi
+
+        images_arg=()
+        work_ids=$(jq -br '.works[] | .id' <<<"$body") || {
+            echo '[Favourite] Failed to read work IDs from review response.' >&2
+            exit 1
+        }
+        for work in $work_ids; do
+            if [[ ! -f "$image_dir/$work.jpg" ]]; then
+                verbose_debug "Image need cache: work id $work."
+                images_arg+=(-o "$image_dir/$work.jpg" "$api_endpoint/cover/$work?type=$image_type")
+            fi
+        done
+
+        if ((${#images_arg[@]} > 0)); then
+            curl -sS --fail --remove-on-error --parallel \
+                -A "fradeet/kikoeru-cli/$version" \
+                -H "authorization: Bearer $token" \
+                "${images_arg[@]}" || {
+                echo '[Favourite] Cover download failed.' >&2
+                exit 1
+            }
+            image_count=$((${#images_arg[@]} / 3))
+            verbose_log "Downloaded new $image_count cover images..."
+        fi
     fi
     if [[ "$output_format" == "alfred" ]]; then
         verbose_log "Generating Alfred Script Filter result..."
