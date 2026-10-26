@@ -47,6 +47,7 @@ status_code="${response##*$'\n'}"
 body="${response%$'\n'*}"
 
 if [[ "$status_code" == "200" ]]; then
+    if [[ -n "$output_format" ]]; then
     verbose_log "Checking images cache..."
 
     image_dir="$KIKOERU_CLI_CACHE_DIR/work_cover_images/$image_type"
@@ -78,6 +79,7 @@ if [[ "$status_code" == "200" ]]; then
         }
         image_count=$((${#images_arg[@]} / 3))
         verbose_log "Downloaded new $image_count cover images..."
+    fi
     fi
     if [[ "$output_format" == "alfred" ]]; then
         verbose_log "Generating Alfred Script Filter result..."
